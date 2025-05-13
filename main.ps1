@@ -357,16 +357,20 @@ function Select-DriverFolder {
 ######                                        Graph Connection                                           ######
 ###############################################################################################################
 ##Killing old sessions
-Disconnect-Graph
-##Killing old sessions
-Disconnect-MGGraph
-
+    try {
+        # Attempt to remove the directory
+        Remove-Item "$env:USERPROFILE\.mg" -Recurse -Force -ErrorAction Stop
+        Write-Host "Verwijderen oude caching voltooid. Disconnect-MgGraph wordt."
+    } catch {
+        # If directory doesn't exist or another error occurs, Disconnect-MgGraph will be executed
+        if ($_ -match "cannot find path") {
+            Write-Host "Directory not found. Proceeding with Disconnect-MgGraph."
+        } else {
+            Write-Host "An error occurred: $($_.Exception.Message)"
+        }
+        Disconnect-MgGraph
+    }
 Write-Verbose "Connecting to Microsoft Graph"
-
-##Killing old sessions
-Disconnect-Graph
-##Killing old sessions
-Disconnect-MGGraph
 
 if ($clientid -and $clientsecret -and $tenant) {
     Connect-ToGraph -Tenant $tenant -AppId $clientid -AppSecret $clientsecret
