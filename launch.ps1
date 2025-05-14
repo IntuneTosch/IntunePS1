@@ -1,20 +1,8 @@
+Clear-Host
 $welcomeScreen = "IF9fX19fX19fXyAgICBfX19fX19fXyAgICAgX19fX19fX18gICAgICBfX19fX19fXyAgICAgX19fICBfX18gICAgIA0KfFxfX18gICBfX19cIHxcICAgX18gIFwgICB8XCAgIF9fX19cICAgIHxcICAgX19fX1wgICB8XCAgXHxcICBcICAgIA0KXHxfX18gXCAgXF98IFwgXCAgXHxcICBcICBcIFwgIFxfX198XyAgIFwgXCAgXF9fX3wgICBcIFwgIFxcXCAgXCAgIA0KICAgICBcIFwgIFwgICBcIFwgIFxcXCAgXCAgXCBcX19fX18gIFwgICBcIFwgIFwgICAgICAgXCBcICAgX18gIFwgIA0KICAgICAgXCBcICBcICAgXCBcICBcXFwgIFwgIFx8X19fX3xcICBcICAgXCBcICBcX19fXyAgIFwgXCAgXCBcICBcIA0KICAgICAgIFwgXCAgXCAgIFwgXCAgXFxcICBcICAgX19fX1xfXCAgXCAgIFwgXCAgICAgICBcICBcIFwgIFwgXCAgXA0KICAgICAgICBcIFxfX1wgICBcIFxfX19fX19fXCAgfFxfX19fX19fX1wgICBcIFxfX19fX19fXCAgXCBcX19cIFxfX1wNCiAgICAgICAgIFx8X198ICAgIFx8X19fX19fX3wgIFx8X19fX19fX19ffCAgIFx8X19fX19fX3wgICBcfF9ffFx8X198IA0KICAgICAgICAgICAgICAgICAgICBXaW5kb3dzIEVuZHBvaW50IFByb3Zpc2lvbmluZyBUb29sDQogICAgICAgICAgICAgICAgICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq"
 Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))               
-Start-Sleep -Seconds 5
-[cmdletbinding()]
-    
-param
-(
-    [string]$tenant #Tenant ID (optional) for when automating and you want to use across tenants instead of hard-coded
-    ,
-    [string]$clientid #ClientID is the type of Azure AD App Reg ID
-    ,
-    [string]$clientsecret #ClientSecret is the type of Azure AD App Reg Secret
-    ,
-    [string]$isopath
-
-    )
-
+Start-Sleep -Seconds 3
+Clear-Host
 ###############################################################################################################
 ######                                          Import Modules                                           ######
 ###############################################################################################################
@@ -26,9 +14,10 @@ Import-Module WindowsAutopilotIntune -MinimumVersion 5.4
 Import-Module Microsoft.Graph.Groups
 Import-Module Microsoft.Graph.Identity.DirectoryManagement
 #  -RequiredVersion 2.8.0
+Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))    
 Write-Host "Modules Succesvol geimporteerd"  -ForegroundColor Green
 Start-Sleep -Seconds 1.5
-Clear
+Clear-Host
 
 ###############################################################################################################
 ######                                          Create Dir                                               ######
@@ -48,9 +37,10 @@ if (-not (Test-Path -LiteralPath $DirectoryToCreate)) {
 
 }
 else {
+    Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))    
     "Tijdelijke Bestandlocatie bestaat al, Script gaat verder."
     Start-Sleep -Seconds 1.5
-    Clear
+    Clear-Host
 }
 
 
@@ -63,14 +53,16 @@ $path = "c:\temp\" + $path2
 
 New-Item -ItemType Directory -Path $path -Force | Out-Null
 if (Test-Path $path) {
+    Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))    
     Write-Host "Random Map succesvol aangemaakt" -ForegroundColor Green
     Start-Sleep -Seconds 1.5
-    Clear
+    Clear-Host
 }
 else {
+    Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))    
     Write-Output "Random Map is niet aangemaakt"
     Start-Sleep -Seconds 10
-    Clear
+    Clear-Host
 }
 
 ###############################################################################################################
@@ -251,11 +243,11 @@ Connect-ToGraph -TenantId $tenantID -AppId $app -AppSecret $secret
      
             $accessToken
             if ($version -eq 2) {
-                write-host "Version 2 module detected"
+                write-host "Graph Versie 2 gedetecteerd"
                 $accesstokenfinal = ConvertTo-SecureString -String $accessToken -AsPlainText -Force
             }
             else {
-                write-host "Version 1 Module Detected"
+                write-host "Graph Versie 1 gedetecteerd"
                 Select-MgProfile -Name Beta
                 $accesstokenfinal = $accessToken
             }
@@ -370,10 +362,10 @@ function Select-DriverFolder {
         }
     }
 }
-
+Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))    
 Write-Host "Functies Succesvol Geimporteerd" -ForegroundColor Green
 Start-Sleep -Seconds 2
-Clear
+Clear-Host
 ###############################################################################################################
 ######                                        Graph Connection                                           ######
 ###############################################################################################################
@@ -402,6 +394,7 @@ Start-Sleep -Seconds 2
 
 if ($clientid -and $clientsecret -and $tenant) {
     Connect-ToGraph -Tenant $tenant -AppId $clientid -AppSecret $clientsecret
+    Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))    
     write-output "Graph Connection Established"
     }
     else {
@@ -410,7 +403,7 @@ if ($clientid -and $clientsecret -and $tenant) {
     }
     Write-Host "Verbinding geslaagd, Profielen ophalen. Kies het juiste profiel" -ForegroundColor Green
     Start-Sleep -Seconds 3
-    Clear
+    Clear-Host
 ###############################################################################################################
 ######                                              Execution JSON                                       ######
 ###############################################################################################################
