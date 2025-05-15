@@ -1,7 +1,7 @@
 Clear-Host
 $welcomeScreen = "IF9fX19fX19fXyAgICBfX19fX19fXyAgICAgX19fX19fX18gICAgICBfX19fX19fXyAgICAgX19fICBfX18gICAgIA0KfFxfX18gICBfX19cIHxcICAgX18gIFwgICB8XCAgIF9fX19cICAgIHxcICAgX19fX1wgICB8XCAgXHxcICBcICAgIA0KXHxfX18gXCAgXF98IFwgXCAgXHxcICBcICBcIFwgIFxfX198XyAgIFwgXCAgXF9fX3wgICBcIFwgIFxcXCAgXCAgIA0KICAgICBcIFwgIFwgICBcIFwgIFxcXCAgXCAgXCBcX19fX18gIFwgICBcIFwgIFwgICAgICAgXCBcICAgX18gIFwgIA0KICAgICAgXCBcICBcICAgXCBcICBcXFwgIFwgIFx8X19fX3xcICBcICAgXCBcICBcX19fXyAgIFwgXCAgXCBcICBcIA0KICAgICAgIFwgXCAgXCAgIFwgXCAgXFxcICBcICAgX19fX1xfXCAgXCAgIFwgXCAgICAgICBcICBcIFwgIFwgXCAgXA0KICAgICAgICBcIFxfX1wgICBcIFxfX19fX19fXCAgfFxfX19fX19fX1wgICBcIFxfX19fX19fXCAgXCBcX19cIFxfX1wNCiAgICAgICAgIFx8X198ICAgIFx8X19fX19fX3wgIFx8X19fX19fX19ffCAgIFx8X19fX19fX3wgICBcfF9ffFx8X198IA0KICAgICAgICAgICAgICAgICAgICBXaW5kb3dzIEVuZHBvaW50IFByb3Zpc2lvbmluZyBUb29sDQogICAgICAgICAgICAgICAgICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq"
 Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))            
-Write-host "Version 0.7" -ForegroundColor DarkRed
+Write-host "Version 0.8" -ForegroundColor DarkRed
 Start-Sleep -Seconds 3
 Clear-Host
 ###############################################################################################################
@@ -252,7 +252,7 @@ Connect-ToGraph -TenantId $tenantID -AppId $app -AppSecret $secret
                 $accesstokenfinal = $accessToken
             }
             $graph = Connect-MgGraph  -AccessToken $accesstokenfinal 
-            Write-Host "Verbonden met Intune Tennant $TenantId using app-based authentication (Azure AD authentication not supported)" -ForegroundColor Green
+            Write-Host "Verbonden met Intune Tennant $TenantId using app-based authentication (Azure AD authentication not supported)" -ForegroundColor DarkRed
         }
         else {
             if ($version -eq 2) {
@@ -265,7 +265,7 @@ Connect-ToGraph -TenantId $tenantID -AppId $app -AppSecret $secret
                 Select-MgProfile -Name Beta
             }
             $graph = Connect-MgGraph -scopes $scopes
-            Write-Host "Verbonden met Intune Tennant $($graph.TenantId)" -ForegroundColor Green
+            Write-Host "Verbonden met Intune Tennant $($graph.TenantId)" -ForegroundColor DarkRed
             ""
         }
     }
@@ -300,10 +300,19 @@ function Select-ISO {
     Add-Type -AssemblyName System.Windows.Forms
 
     # Define default ISO file path
-    $DefaultPath = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11Intune1.6.iso"
+    $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11Intune1.6.iso"
+    $DefaultISOPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\W11Intune1.6.iso"
 
-    if (Test-Path $DefaultPath) {
-        return $DefaultPath
+    if (Test-Path $DefaultISOPath1) {
+        $DefaultISOPath = $DefaultISOPath1
+    } elseif (Test-Path $DefaultISOPath2) {
+        $DefaultISOPath = $DefaultISOPath2
+    } else {
+        $DefaultISOPath = ""
+    }
+
+    if (Test-Path $DefaultISOPath) {
+        return $DefaultISOPath
     } else {
         $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
         $OpenFileDialog.Filter = 'ISO Files (*.iso)|*.iso'
@@ -325,10 +334,19 @@ function Select-Provision {
     Add-Type -AssemblyName System.Windows.Forms
 
     # Define default provision file path
-    $DefaultPath = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
+    $DefaultProvisionPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
+    $DefaultProvisionPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
 
-    if (Test-Path $DefaultPath) {
-        return $DefaultPath
+    if (Test-Path $DefaultProvisionPath1) {
+        $DefaultProvisionPath = $DefaultProvisionPath1
+    } elseif (Test-Path $DefaultProvisionPath2) {
+        $DefaultProvisionPath = $DefaultProvisionPath2
+    } else {
+        $DefaultProvisionPath = ""
+    }
+
+    if (Test-Path $DefaultProvisionPath) {
+        return $DefaultProvisionPath
     } else {
         $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
         $OpenFileDialog.Filter = 'PS1 Files (*.ps1)|*.ps1'
@@ -350,10 +368,19 @@ function Select-DriverFolder {
     Add-Type -AssemblyName System.Windows.Forms
 
     # Resolve default path with current username
-    $DefaultPath = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Drivers"
+    $DefaultDriversPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Drivers"
+    $DefaultDriversPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\Drivers"
 
-    if (Test-Path $DefaultPath) {
-        return $DefaultPath
+    if (Test-Path $DefaultDriversPath1) {
+        $DefaultDriversPath = $DefaultDriversPath1
+    } elseif (Test-Path $DefaultDriversPath2) {
+        $DefaultDriversPath = $DefaultDriversPath2
+    } else {
+        $DefaultDriversPath = ""
+    }
+
+    if (Test-Path $DefaultDriversPath) {
+        return $DefaultDriversPath
     } else {
         $FolderBrowserDialog = New-Object System.Windows.Forms.FolderBrowserDialog
         $FolderBrowserDialog.Description = "Selecteer de driver Map"
@@ -398,7 +425,7 @@ try {
         Disconnect-MgGraph | Out-Null
     }
 }
-Write-Host "Verbinding maken met MS Graph"  -ForegroundColor Green
+Write-Host "Verbinding maken met MS Graph"  -ForegroundColor DarkRed
 ""
 Start-Sleep -Seconds 2
 
