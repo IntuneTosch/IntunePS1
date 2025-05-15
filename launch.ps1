@@ -23,7 +23,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune" Height="320" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune" Height="360" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -42,6 +42,8 @@ $XAML = @"
             <Button x:Name="btnCheckModules" Content="Check Modules" Margin="10,5,10,5"
                     Background="#ff6f00" Foreground="White" Padding="5"/>
             <Button x:Name="btnCreateUSB" Content="Create USB" Margin="10,5,10,10"
+                    Background="#ff6f00" Foreground="White" Padding="5"/>
+            <Button x:Name="btnCreateUSBNP" Content="USB no Profile" Margin="10,15,10,10"
                     Background="#ff6f00" Foreground="White" Padding="5"/>
         </StackPanel>
 
@@ -73,6 +75,7 @@ $btnInstallPowershell = $Window.FindName("btnInstallPowershell")
 $btnInstallModules = $Window.FindName("btnInstallModules")
 $btnCheckModules   = $Window.FindName("btnCheckModules")
 $btnCreateUSB      = $Window.FindName("btnCreateUSB")
+$btnCreateUSBNP    = $Window.FindName("btnCreateUSBNP")
 $txtStatus         = $Window.FindName("txtStatus")
 
 # Functions
@@ -209,11 +212,23 @@ function Create-USB {
     $txtStatus.Text += "`nExtern venster geopend."
 }
 
+function Create-USBNP {
+    $txtStatus.Text = "Downloaden van Script van GitHub..."
+    $githubRawUrl = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/mainnp.ps1"
+    $tempScript = "$env:TEMP\MainFunctionScript.ps1"
+    Invoke-WebRequest -Uri $githubRawUrl -OutFile $tempScript
+    $txtStatus.Text = "Openen van Script in een nieuw venster..."
+    Start-Sleep -Seconds 2
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempScript`""
+    $txtStatus.Text += "`nExtern venster geopend. Zorg ervoor dat je zelf het provisioning-bestand kopieert."
+}
+
 # Event Handlers
 $btnInstallPowershell.Add_Click({ Install-Powershell })
 $btnInstallModules.Add_Click({ Install-Modules })
 $btnCheckModules.Add_Click({ Check-Modules })
 $btnCreateUSB.Add_Click({ Create-USB })
+$btnCreateUSBNP.Add_Click({ Create-USBNP })
 
 # Run GUI
 $Window.ShowDialog() | Out-Null
