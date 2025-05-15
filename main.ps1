@@ -252,7 +252,7 @@ Connect-ToGraph -TenantId $tenantID -AppId $app -AppSecret $secret
                 $accesstokenfinal = $accessToken
             }
             $graph = Connect-MgGraph  -AccessToken $accesstokenfinal 
-            Write-Host "Verbonden met Intune Tennant $TenantId using app-based authentication (Azure AD authentication not supported)" -ForegroundColor DarkRed
+            Write-Host "Verbonden met Intune Tennant $TenantId using app-based authentication (Azure AD authentication not supported)" -ForegroundColor Green
         }
         else {
             if ($version -eq 2) {
@@ -265,7 +265,7 @@ Connect-ToGraph -TenantId $tenantID -AppId $app -AppSecret $secret
                 Select-MgProfile -Name Beta
             }
             $graph = Connect-MgGraph -scopes $scopes
-            Write-Host "Verbonden met Intune Tennant $($graph.TenantId)" -ForegroundColor DarkRed
+            Write-Host "Verbonden met Intune Tennant $($graph.TenantId)" -ForegroundColor Green
             ""
         }
     }
@@ -398,7 +398,7 @@ try {
         Disconnect-MgGraph | Out-Null
     }
 }
-Write-Host "Verbinding maken met MS Graph"  -ForegroundColor DarkRed
+Write-Host "Verbinding maken met MS Graph"  -ForegroundColor Green
 ""
 Start-Sleep -Seconds 2
 
