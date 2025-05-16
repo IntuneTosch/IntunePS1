@@ -95,5 +95,5 @@ foreach ($module in $RequiredModules) {
     }
 }
 
-Write-Host "`n✅ All modules are validated and installed correctly." -ForegroundColor Green
+Write-Host "`n✅ Alle modules zijn gevalideerd en correct geïnstalleerd. Je wordt nu teruggeleid naar het hoofdmenu." -ForegroundColor Green
 Start-Sleep -Seconds 5
