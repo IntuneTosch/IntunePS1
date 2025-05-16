@@ -1,11 +1,16 @@
-# Check if the script is run as Administrator
+# Check for admin rights
 $IsAdmin = [Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()
 $IsAdminRole = $IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 if (-not $IsAdminRole) {
-    # Relaunch the script with elevated privileges
-    $scriptPath = $MyInvocation.MyCommand.Path
-    Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`"" -Verb RunAs
+    # Not elevated — save the current script to a temp file
+    $LaunchScriptURL = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/launch.ps1"
+    $LaunchScript = "$env:TEMP\launch_elevated.ps1"
+
+    Invoke-WebRequest -Uri $LaunchScriptURL -OutFile $LaunchScript
+
+    # Re-launch with elevated rights
+    Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$LaunchScript`"" -Verb RunAs
     exit
 } else {
     Write-Host "The script is running with elevated privileges."
