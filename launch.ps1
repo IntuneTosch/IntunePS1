@@ -1,4 +1,4 @@
-# Check for admin rights
+# Kijkt voor admin rechten
 $IsAdmin = [Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()
 $IsAdminRole = $IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
