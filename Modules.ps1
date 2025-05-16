@@ -1,5 +1,6 @@
 # 0.3
 # List of required modules with optional minimum versions
+Write-host "Modules Version 0.3" -ForegroundColor Green
 $RequiredModules = @(
     @{ Name = "MSAL.PS" },
     @{ Name = "Microsoft.Graph.Groups" },
