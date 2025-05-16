@@ -1,4 +1,3 @@
-#Version 0.8.2
 # Check if the script is run as Administrator
 $IsAdmin = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
 $IsAdminRole = $IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -24,7 +23,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune" Height="360" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 0.9" Height="360" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -98,7 +97,7 @@ function Install-Powershell {
         $txtStatus.Text += "`nDownloaden van script van GitHub..."
         Invoke-WebRequest -Uri $githubRawUrl -OutFile $ScriptPowershell -UseBasicParsing
         Start-Sleep -Seconds 2
-        Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPowershell`""
+        Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPowershell`""
         $txtStatus.Text += "`nInstallatie van PowerShell 7 is gestart in een nieuw venster."
         $txtStatus.Text += "`n`nHertstart de Computer na installatie"
     }
@@ -116,7 +115,7 @@ function Install-Modules {
         return
     }
 
-    $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
+    $txtStatus.Text = "PowerShell 7 is gevonden. Downloaden van script van GitHub..."
     
     $githubRawUrl = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Modules.ps1"
     $ModulesScript = "$env:TEMP\ModulesScript.ps1"
