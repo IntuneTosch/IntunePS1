@@ -23,7 +23,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune 0.9" Height="360" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 1.0" Height="360" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -90,12 +90,12 @@ function Install-Powershell {
 
     # Installeer PowerShell 7
     $txtStatus.Text = "PowerShell 7 niet gevonden. Installatie wordt gestart..."
-    $githubRawUrl = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Powershell7.ps1"
+    $githubRawUrlInstallPowershell = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Powershell7.ps1"
     $ScriptPowershell = "$env:TEMP\PowershellScript.ps1"
 
     try {
         $txtStatus.Text += "`nDownloaden van script van GitHub..."
-        Invoke-WebRequest -Uri $githubRawUrl -OutFile $ScriptPowershell -UseBasicParsing
+        Invoke-WebRequest -Uri $githubRawUrlInstallPowershell -OutFile $ScriptPowershell -UseBasicParsing
         Start-Sleep -Seconds 2
         Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPowershell`""
         $txtStatus.Text += "`nInstallatie van PowerShell 7 is gestart in een nieuw venster."
@@ -115,11 +115,11 @@ function Install-Modules {
         return
     }
 
-    $txtStatus.Text = "PowerShell 7 is gevonden. Downloaden van script van GitHub..."
+    $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
     
-    $githubRawUrl = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Modules.ps1"
+    $githubRawUrlInstallModules = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Modules.ps1"
     $ModulesScript = "$env:TEMP\ModulesScript.ps1"
-    Invoke-WebRequest -Uri $githubRawUrl -OutFile $ModulesScript
+    Invoke-WebRequest -Uri $githubRawUrlInstallModules -OutFile $ModulesScript
 
     $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
@@ -160,25 +160,47 @@ function Check-Modules {
 }
 
 function Create-USB {
-    $txtStatus.Text = "Downloaden van Script van GitHub..."
-    $githubRawUrl = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/main.ps1"
-    $tempScript = "$env:TEMP\MainFunctionScript.ps1"
-    Invoke-WebRequest -Uri $githubRawUrl -OutFile $tempScript
-    $txtStatus.Text = "Openen van Script in een nieuw venster..."
+
+    # Controleer of pwsh.exe beschikbaar is
+    $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
+
+    if (-not $pwshPath) {
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geïnstalleerd."
+        return
+    }
+
+    $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
+    
+    $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/main.ps1"
+    $CreateUSBScript = "$env:TEMP\CreateUSBScript.ps1"
+    Invoke-WebRequest -Uri $githubRawUrlCreateUSB -OutFile $CreateUSBScript
+
+    $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
-    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempScript`""
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CreateUSBScript`""
     $txtStatus.Text += "`nExtern venster geopend."
 }
 
 function Create-USBNP {
-    $txtStatus.Text = "Downloaden van Script van GitHub..."
-    $githubRawUrl = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/mainnp.ps1"
-    $tempScriptNP = "$env:TEMP\MainFunctionScriptNP.ps1"
-    Invoke-WebRequest -Uri $githubRawUrl -OutFile $tempScriptNP
-    $txtStatus.Text = "Openen van Script in een nieuw venster..."
+
+    # Controleer of pwsh.exe beschikbaar is
+    $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
+
+    if (-not $pwshPath) {
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geïnstalleerd."
+        return
+    }
+
+    $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
+    
+    $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/mainnp.ps1"
+    $CreateUSBScriptNP = "$env:TEMP\CreateUSBScript.ps1"
+    Invoke-WebRequest -Uri $githubRawUrlCreateUSBNP -OutFile $CreateUSBScriptNP
+
+    $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
-    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempScriptNP`""
-    $txtStatus.Text += "`nExtern venster geopend. Zorg ervoor dat je zelf het provisioning-bestand kopieert."
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CreateUSBScriptNP`""
+    $txtStatus.Text += "`nExtern venster geopend."
 }
 
 # Event Handlers
