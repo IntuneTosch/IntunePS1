@@ -96,3 +96,4 @@ foreach ($module in $RequiredModules) {
 }
 
 Write-Host "`n✅ All modules are validated and installed correctly." -ForegroundColor Green
+Start-Sleep -Seconds 5
