@@ -28,7 +28,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune 1.4" Height="380" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 1.4" Height="390" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -47,14 +47,14 @@ $XAML = @"
                 Background="#ff6f00" Foreground="White" Padding="5"/>
     
         <!-- New Language Dropdown + Create USB -->
-            <ComboBox x:Name="cmbLanguage" Margin="10,15,10,0" SelectedIndex="0">
+            <ComboBox x:Name="cmbLanguage" Margin="10,25,10,5" SelectedIndex="0">
                 <ComboBoxItem>Nederlands</ComboBoxItem>
                 <ComboBoxItem>Engels</ComboBoxItem>
             </ComboBox>
                 <Button x:Name="btnCreateUSB" Content="Create USB" Margin="10,5,10,5"
                     Background="#ff6f00" Foreground="White" Padding="5"/>
             
-                <Button x:Name="btnCreateUSBNP" Content="USB no Profile" Margin="10,5,10,10"
+                <Button x:Name="btnCreateUSBNP" Content="USB no Profile" Margin="10,5,10,5"
                     Background="#ff6f00" Foreground="White" Padding="5"/>
 </StackPanel>
 
