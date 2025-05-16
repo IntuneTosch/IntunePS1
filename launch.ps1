@@ -28,7 +28,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune 1.4" Height="390" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 1.5" Height="390" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -102,7 +102,7 @@ function Install-Powershell {
 
     # Installeer PowerShell 7
     $txtStatus.Text = "PowerShell 7 niet gevonden. Installatie wordt gestart..."
-    $githubRawUrlPS = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Powershell7.ps1"
+    $githubRawUrlPS = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Requirements/Powershell7.ps1"
     $ScriptPowershell = "$env:TEMP\PowershellScript.ps1"
 
     try {
@@ -130,7 +130,7 @@ function Install-Modules {
 
     $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
     
-    $githubRawUrlInstallModules = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Modules.ps1"
+    $githubRawUrlInstallModules = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Requirements/Modules.ps1"
     $ModulesScript = "$env:TEMP\ModulesScript.ps1"
     Invoke-WebRequest -Uri $githubRawUrlInstallModules -OutFile $ModulesScript
 
@@ -188,9 +188,9 @@ function Create-USB {
     $selectedLanguage = $cmbLanguage.SelectedItem.Content
 
     if ($selectedLanguage -eq "Nederlands") {
-        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/main_nl.ps1"
+        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOMetProfiel/main_nl.ps1"
     } elseif ($selectedLanguage -eq "Engels") {
-        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/main_en.ps1"
+        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOMetProfiel/main_en.ps1"
     } else {
         $txtStatus.Text += "`nGeen geldige taal geselecteerd. Kies een taal."
         return
@@ -221,9 +221,9 @@ function Create-USBNP {
     $selectedLanguage = $cmbLanguage.SelectedItem.Content
 
     if ($selectedLanguage -eq "Nederlands") {
-        $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/mainnp_nl.ps1"
+        $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_nl.ps1"
     } elseif ($selectedLanguage -eq "Engels") {
-        $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/mainnp_en.ps1"
+        $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_en.ps1"
     } else {
         $txtStatus.Text += "`nGeen geldige taal geselecteerd. Kies een taal."
         return
