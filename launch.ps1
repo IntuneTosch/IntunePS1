@@ -89,7 +89,7 @@ function Install-Powershell {
     $pwshPath = Get-Command pwsh -ErrorAction SilentlyContinue
 
     if ($pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is al geinstalleerd. Installatie overgeslagen."
+        $txtStatus.Text = "PowerShell 7 is al geinstalleerd.`nInstallatie overgeslagen."
         return
     }
 
