@@ -452,7 +452,6 @@ $selectedprofile = GrabProfiles
 if (-not $selectedprofile) {
     Write-Error -Message "Er is geen profiel geselcteerd Hierdoor kan het script niet verder." -ErrorAction Stop
 }
-Write-output "test"
 ##Grab JSON for selected profile
 $profilejson = grabandoutput -id $selectedprofile
 
