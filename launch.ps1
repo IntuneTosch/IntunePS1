@@ -1,4 +1,4 @@
-# Kijkt voor admin rechten
+# Check for admin rights
 $IsAdmin = [Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()
 $IsAdminRole = $IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
@@ -9,7 +9,7 @@ if (-not $IsAdminRole) {
 
     Invoke-WebRequest -Uri $LaunchScriptURL -OutFile $LaunchScript
 
-    # Herstarten met admin rechten
+    # Re-launch with elevated rights
     Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$LaunchScript`"" -Verb RunAs
     exit
 } else {
@@ -28,7 +28,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune 1.2" Height="360" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 1.3" Height="380" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -37,20 +37,26 @@ $XAML = @"
         </Grid.ColumnDefinitions>
         
         <!-- Sidebar -->
-        <StackPanel Grid.Column="0" Background="#1e4962" Margin="0,0,10,0">
-            <TextBlock Text="Tosch" Foreground="#ff6f00" FontSize="45" FontWeight="Bold" 
-                       Margin="10,20,10,10"/>
+<StackPanel Grid.Column="0" Background="#1e4962" Margin="0,0,10,0">
+        <TextBlock Text="Tosch" Foreground="#ff6f00" FontSize="45" FontWeight="Bold" Margin="10,20,10,10"/>
             <Button x:Name="btnInstallPowershell" Content="Install Powershell 7" Margin="10,5,10,5"
-                    Background="#ff6f00" Foreground="White" Padding="5"/>
+                Background="#ff6f00" Foreground="White" Padding="5"/>
             <Button x:Name="btnInstallModules" Content="Install Modules" Margin="10,5,10,5"
-                    Background="#ff6f00" Foreground="White" Padding="5"/>
+                Background="#ff6f00" Foreground="White" Padding="5"/>
             <Button x:Name="btnCheckModules" Content="Check Modules" Margin="10,5,10,5"
+                Background="#ff6f00" Foreground="White" Padding="5"/>
+    
+        <!-- New Language Dropdown + Create USB -->
+            <ComboBox x:Name="cmbLanguage" Margin="10,5,10,0" SelectedIndex="0">
+                <ComboBoxItem>Nederlands</ComboBoxItem>
+                <ComboBoxItem>Engels</ComboBoxItem>
+            </ComboBox>
+                <Button x:Name="btnCreateUSB" Content="Create USB" Margin="10,5,10,5"
                     Background="#ff6f00" Foreground="White" Padding="5"/>
-            <Button x:Name="btnCreateUSB" Content="Create USB" Margin="10,5,10,10"
+            
+                <Button x:Name="btnCreateUSBNP" Content="USB no Profile" Margin="10,15,10,10"
                     Background="#ff6f00" Foreground="White" Padding="5"/>
-            <Button x:Name="btnCreateUSBNP" Content="USB no Profile" Margin="10,15,10,10"
-                    Background="#ff6f00" Foreground="White" Padding="5"/>
-        </StackPanel>
+</StackPanel>
 
         <!-- Main Display -->
         <StackPanel Grid.Column="1">
@@ -82,6 +88,7 @@ $btnCheckModules   = $Window.FindName("btnCheckModules")
 $btnCreateUSB      = $Window.FindName("btnCreateUSB")
 $btnCreateUSBNP    = $Window.FindName("btnCreateUSBNP")
 $txtStatus         = $Window.FindName("txtStatus")
+$cmbLanguage       = $Window.FindName("cmbLanguage")
 
 # Functions
 function Install-Powershell {
@@ -89,7 +96,7 @@ function Install-Powershell {
     $pwshPath = Get-Command pwsh -ErrorAction SilentlyContinue
 
     if ($pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is al geinstalleerd.`nInstallatie overgeslagen."
+        $txtStatus.Text = "PowerShell 7 is al geinstalleerd. Installatie overgeslagen."
         return
     }
 
@@ -171,13 +178,24 @@ function Create-USB {
     $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
 
     if (-not $pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
         return
     }
 
     $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
-    
-    $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/main.ps1"
+
+    # Determine selected language
+    $selectedLanguage = $cmbLanguage.SelectedItem.Content
+
+    if ($selectedLanguage -eq "Nederlands") {
+        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/main_nl.ps1"
+    } elseif ($selectedLanguage -eq "Engels") {
+        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/main_en.ps1"
+    } else {
+        $txtStatus.Text += "`nGeen geldige taal geselecteerd. Kies een taal."
+        return
+    }
+
     $CreateUSBScript = "$env:TEMP\CreateUSBScript.ps1"
     Invoke-WebRequest -Uri $githubRawUrlCreateUSB -OutFile $CreateUSBScript
 
