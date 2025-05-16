@@ -1,13 +1,14 @@
-# 0.2
+# 0.3
 # List of required modules with optional minimum versions
 $RequiredModules = @(
     @{ Name = "MSAL.PS" },
-    @{ Name = "Intune.USB.Creator" },
+    @{ Name = "Microsoft.Graph.Groups" },
+    @{ Name = "Microsoft.Graph.Identity.DirectoryManagement" },
     @{ Name = "Microsoft.Graph.Authentication" },
     @{ Name = "Microsoft.Graph.Intune" },
-    @{ Name = "WindowsAutopilotIntune"; MinimumVersion = "5.4" },
-    @{ Name = "Microsoft.Graph.Groups" },
-    @{ Name = "Microsoft.Graph.Identity.DirectoryManagement" }
+    @{ Name = "Intune.USB.Creator" },
+    @{ Name = "WindowsAutopilotIntune"; MinimumVersion = "5.4" }
+
 )
 
 # Valid installation paths
