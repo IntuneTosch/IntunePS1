@@ -117,7 +117,7 @@ function Install-Modules {
     $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
 
     if (-not $pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geïnstalleerd."
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
         return
     }
 
@@ -171,7 +171,7 @@ function Create-USB {
     $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
 
     if (-not $pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geïnstalleerd."
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
         return
     }
 
@@ -193,7 +193,7 @@ function Create-USBNP {
     $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
 
     if (-not $pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geïnstalleerd."
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
         return
     }
 
