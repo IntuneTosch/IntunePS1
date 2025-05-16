@@ -1,5 +1,5 @@
-#0.2
-# List of required modules and optional minimum versions
+# 0.2
+# List of required modules with optional minimum versions
 $RequiredModules = @(
     @{ Name = "MSAL.PS" },
     @{ Name = "Intune.USB.Creator" },
@@ -10,16 +10,21 @@ $RequiredModules = @(
     @{ Name = "Microsoft.Graph.Identity.DirectoryManagement" }
 )
 
-# Target module install path
-$RequiredPath = "C:\Program Files\PowerShell\Modules"
+# Valid installation paths
+$ValidPaths = @(
+    "C:\Program Files\PowerShell\Modules",
+    "C:\Program Files\WindowsPowerShell\Modules"
+)
 
-# Ensure script runs as Administrator
+$TargetInstallPath = "C:\Program Files\PowerShell\Modules"
+
+# Check for admin privileges
 if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Warning "This script must be run as Administrator."
     exit 1
 }
 
-# Install NuGet provider silently if missing
+# Ensure NuGet provider is installed silently
 try {
     if (-not (Get-PackageProvider -Name NuGet -ErrorAction Stop)) {
         throw "NuGet not installed"
@@ -29,12 +34,12 @@ try {
     Install-PackageProvider -Name NuGet -Force -Scope AllUsers -Confirm:$false
 }
 
-# Trust PSGallery if not trusted
+# Trust PSGallery
 if ((Get-PSRepository -Name 'PSGallery').InstallationPolicy -ne 'Trusted') {
     Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
 }
 
-# Loop through each required module
+# Process each module
 foreach ($module in $RequiredModules) {
     $name = $module.Name
     $minVersion = if ($module.ContainsKey("MinimumVersion")) { [Version]$module.MinimumVersion } else { $null }
@@ -44,24 +49,24 @@ foreach ($module in $RequiredModules) {
 
     if ($installedModules) {
         foreach ($mod in $installedModules) {
-            $isCorrectLocation = ($mod.InstalledLocation -eq "$RequiredPath\$name")
+            $isValidLocation = $ValidPaths -contains (Split-Path $mod.InstalledLocation -Parent)
             $isCorrectVersion = ($minVersion -eq $null -or $mod.Version -ge $minVersion)
 
-            if ($isCorrectLocation -and $isCorrectVersion) {
-                Write-Host "✔ $name is already installed correctly." -ForegroundColor Cyan
+            if ($isValidLocation -and $isCorrectVersion) {
+                Write-Host "✔ $name is already installed correctly at $($mod.InstalledLocation)." -ForegroundColor Cyan
                 $needsInstall = $false
-            } elseif (-not $isCorrectLocation) {
+            } elseif (-not $isValidLocation) {
                 Write-Host "✖ $name found at wrong location: $($mod.InstalledLocation). Removing..." -ForegroundColor Red
                 Uninstall-Module -Name $name -AllVersions -Force -ErrorAction SilentlyContinue
-            } elseif (-not $isCorrectVersion -and $isCorrectLocation) {
-                Write-Host "⚠ $name is at $($mod.Version), which is below required version $minVersion. Reinstalling..." -ForegroundColor Yellow
+            } elseif (-not $isCorrectVersion -and $isValidLocation) {
+                Write-Host "⚠ $name is version $($mod.Version), below required $minVersion. Removing..." -ForegroundColor Yellow
                 Uninstall-Module -Name $name -AllVersions -Force -ErrorAction SilentlyContinue
             }
         }
     }
 
     if ($needsInstall) {
-        Write-Host "⬇ Installing $name..." -ForegroundColor Green
+        Write-Host "⬇ Installing $name to $TargetInstallPath..." -ForegroundColor Green
         $params = @{
             Name         = $name
             Scope        = "AllUsers"
@@ -73,4 +78,4 @@ foreach ($module in $RequiredModules) {
     }
 }
 
-Write-Host "`n✅ All modules are installed and validated." -ForegroundColor Green
+Write-Host "`n✅ All modules are validated and installed correctly." -ForegroundColor Green
