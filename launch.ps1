@@ -28,7 +28,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune 1.3" Height="380" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 1.4" Height="380" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -47,14 +47,14 @@ $XAML = @"
                 Background="#ff6f00" Foreground="White" Padding="5"/>
     
         <!-- New Language Dropdown + Create USB -->
-            <ComboBox x:Name="cmbLanguage" Margin="10,5,10,0" SelectedIndex="0">
+            <ComboBox x:Name="cmbLanguage" Margin="10,15,10,0" SelectedIndex="0">
                 <ComboBoxItem>Nederlands</ComboBoxItem>
                 <ComboBoxItem>Engels</ComboBoxItem>
             </ComboBox>
                 <Button x:Name="btnCreateUSB" Content="Create USB" Margin="10,5,10,5"
                     Background="#ff6f00" Foreground="White" Padding="5"/>
             
-                <Button x:Name="btnCreateUSBNP" Content="USB no Profile" Margin="10,15,10,10"
+                <Button x:Name="btnCreateUSBNP" Content="USB no Profile" Margin="10,5,10,10"
                     Background="#ff6f00" Foreground="White" Padding="5"/>
 </StackPanel>
 
@@ -211,14 +211,25 @@ function Create-USBNP {
     $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
 
     if (-not $pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
         return
     }
 
     $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
-    
-    $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/mainnp.ps1"
-    $CreateUSBScriptNP = "$env:TEMP\CreateUSBScript.ps1"
+
+    # Determine selected language
+    $selectedLanguage = $cmbLanguage.SelectedItem.Content
+
+    if ($selectedLanguage -eq "Nederlands") {
+        $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/mainnp_nl.ps1"
+    } elseif ($selectedLanguage -eq "Engels") {
+        $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/mainnp_en.ps1"
+    } else {
+        $txtStatus.Text += "`nGeen geldige taal geselecteerd. Kies een taal."
+        return
+    }
+
+    $CreateUSBScriptNP = "$env:TEMP\CreateUSBScriptNP.ps1"
     Invoke-WebRequest -Uri $githubRawUrlCreateUSBNP -OutFile $CreateUSBScriptNP
 
     $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
