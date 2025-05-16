@@ -95,14 +95,14 @@ function Install-Powershell {
 
     # Installeer PowerShell 7
     $txtStatus.Text = "PowerShell 7 niet gevonden. Installatie wordt gestart..."
-    $githubRawUrlInstallPowershell = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Powershell7.ps1"
+    $githubRawUrlPS = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Powershell7.ps1"
     $ScriptPowershell = "$env:TEMP\PowershellScript.ps1"
 
     try {
         $txtStatus.Text += "`nDownloaden van script van GitHub..."
-        Invoke-WebRequest -Uri $githubRawUrlInstallPowershell -OutFile $ScriptPowershell -UseBasicParsing
+        Invoke-WebRequest -Uri $githubRawUrlPS -OutFile $ScriptPowershell -UseBasicParsing
         Start-Sleep -Seconds 2
-        Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPowershell`""
+        Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPowershell`""
         $txtStatus.Text += "`nInstallatie van PowerShell 7 is gestart in een nieuw venster."
         $txtStatus.Text += "`n`nHertstart de Computer na installatie"
     }
