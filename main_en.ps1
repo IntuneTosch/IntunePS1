@@ -300,8 +300,8 @@ function Select-ISO {
     Add-Type -AssemblyName System.Windows.Forms
 
     # Define default ISO file path
-    $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11Intune1.6EN.iso"
-    $DefaultISOPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\W11Intune1.6EN.iso"
+    $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11IntuneEN1.6.iso"
+    $DefaultISOPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\W11IntuneEN1.6.iso"
 
     if (Test-Path $DefaultISOPath1) {
         $DefaultISOPath = $DefaultISOPath1
