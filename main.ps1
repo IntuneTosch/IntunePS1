@@ -1,7 +1,7 @@
 Clear-Host
 $welcomeScreen = "IF9fX19fX19fXyAgICBfX19fX19fXyAgICAgX19fX19fX18gICAgICBfX19fX19fXyAgICAgX19fICBfX18gICAgIA0KfFxfX18gICBfX19cIHxcICAgX18gIFwgICB8XCAgIF9fX19cICAgIHxcICAgX19fX1wgICB8XCAgXHxcICBcICAgIA0KXHxfX18gXCAgXF98IFwgXCAgXHxcICBcICBcIFwgIFxfX198XyAgIFwgXCAgXF9fX3wgICBcIFwgIFxcXCAgXCAgIA0KICAgICBcIFwgIFwgICBcIFwgIFxcXCAgXCAgXCBcX19fX18gIFwgICBcIFwgIFwgICAgICAgXCBcICAgX18gIFwgIA0KICAgICAgXCBcICBcICAgXCBcICBcXFwgIFwgIFx8X19fX3xcICBcICAgXCBcICBcX19fXyAgIFwgXCAgXCBcICBcIA0KICAgICAgIFwgXCAgXCAgIFwgXCAgXFxcICBcICAgX19fX1xfXCAgXCAgIFwgXCAgICAgICBcICBcIFwgIFwgXCAgXA0KICAgICAgICBcIFxfX1wgICBcIFxfX19fX19fXCAgfFxfX19fX19fX1wgICBcIFxfX19fX19fXCAgXCBcX19cIFxfX1wNCiAgICAgICAgIFx8X198ICAgIFx8X19fX19fX3wgIFx8X19fX19fX19ffCAgIFx8X19fX19fX3wgICBcfF9ffFx8X198IA0KICAgICAgICAgICAgICAgICAgICBXaW5kb3dzIEVuZHBvaW50IFByb3Zpc2lvbmluZyBUb29sDQogICAgICAgICAgICAgICAgICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq"
 Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))            
-Write-host "Version 0.8" -ForegroundColor DarkRed
+Write-host "Version 0.9" -ForegroundColor DarkRed
 Start-Sleep -Seconds 3
 Clear-Host
 ###############################################################################################################
@@ -252,7 +252,7 @@ Connect-ToGraph -TenantId $tenantID -AppId $app -AppSecret $secret
                 $accesstokenfinal = $accessToken
             }
             $graph = Connect-MgGraph  -AccessToken $accesstokenfinal 
-            Write-Host "Verbonden met Intune Tennant $TenantId using app-based authentication (Azure AD authentication not supported)" -ForegroundColor DarkRed
+            Write-Host "Verbonden met Intune Tennant $TenantId using app-based authentication (Azure AD authentication not supported)" -ForegroundColor Green
         }
         else {
             if ($version -eq 2) {
@@ -265,7 +265,7 @@ Connect-ToGraph -TenantId $tenantID -AppId $app -AppSecret $secret
                 Select-MgProfile -Name Beta
             }
             $graph = Connect-MgGraph -scopes $scopes
-            Write-Host "Verbonden met Intune Tennant $($graph.TenantId)" -ForegroundColor DarkRed
+            Write-Host "Verbonden met Intune Tennant $($graph.TenantId)" -ForegroundColor Green
             ""
         }
     }
@@ -325,6 +325,7 @@ function Select-ISO {
         }
     }
 }
+
 
 ##Provisioning file PS1 Selecteren Functie:
 function Select-Provision {
@@ -425,7 +426,7 @@ try {
         Disconnect-MgGraph | Out-Null
     }
 }
-Write-Host "Verbinding maken met MS Graph"  -ForegroundColor DarkRed
+Write-Host "Verbinding maken met MS Graph"  -ForegroundColor Green
 ""
 Start-Sleep -Seconds 2
 
