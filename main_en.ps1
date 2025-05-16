@@ -1,7 +1,27 @@
+###############################################################################################################
+######                                          Variable                                                 ######
+###############################################################################################################
+
+# Define default ISO file path
+$DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11IntuneEnglish1.6.iso"
+$DefaultISOPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\W11IntuneEnglish1.6.iso"
+
+# Define default provision file path
+$DefaultProvisionPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
+$DefaultProvisionPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
+
+# Resolve default path with current username
+$DefaultDriversPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Drivers"
+$DefaultDriversPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\Drivers"
+
+###############################################################################################################
+######                                          Start Script                                             ######
+###############################################################################################################
+
 Clear-Host
 $welcomeScreen = "IF9fX19fX19fXyAgICBfX19fX19fXyAgICAgX19fX19fX18gICAgICBfX19fX19fXyAgICAgX19fICBfX18gICAgIA0KfFxfX18gICBfX19cIHxcICAgX18gIFwgICB8XCAgIF9fX19cICAgIHxcICAgX19fX1wgICB8XCAgXHxcICBcICAgIA0KXHxfX18gXCAgXF98IFwgXCAgXHxcICBcICBcIFwgIFxfX198XyAgIFwgXCAgXF9fX3wgICBcIFwgIFxcXCAgXCAgIA0KICAgICBcIFwgIFwgICBcIFwgIFxcXCAgXCAgXCBcX19fX18gIFwgICBcIFwgIFwgICAgICAgXCBcICAgX18gIFwgIA0KICAgICAgXCBcICBcICAgXCBcICBcXFwgIFwgIFx8X19fX3xcICBcICAgXCBcICBcX19fXyAgIFwgXCAgXCBcICBcIA0KICAgICAgIFwgXCAgXCAgIFwgXCAgXFxcICBcICAgX19fX1xfXCAgXCAgIFwgXCAgICAgICBcICBcIFwgIFwgXCAgXA0KICAgICAgICBcIFxfX1wgICBcIFxfX19fX19fXCAgfFxfX19fX19fX1wgICBcIFxfX19fX19fXCAgXCBcX19cIFxfX1wNCiAgICAgICAgIFx8X198ICAgIFx8X19fX19fX3wgIFx8X19fX19fX19ffCAgIFx8X19fX19fX3wgICBcfF9ffFx8X198IA0KICAgICAgICAgICAgICAgICAgICBXaW5kb3dzIEVuZHBvaW50IFByb3Zpc2lvbmluZyBUb29sDQogICAgICAgICAgICAgICAgICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq"
 Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))            
-Write-host "Version 0.9.1 - Engels" -ForegroundColor DarkRed
+Write-host "Version 1.0 - Engels" -ForegroundColor DarkRed
 Start-Sleep -Seconds 3
 Clear-Host
 ###############################################################################################################
@@ -299,10 +319,6 @@ function Select-ISO {
 
     Add-Type -AssemblyName System.Windows.Forms
 
-    # Define default ISO file path
-    $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11IntuneEN1.6.iso"
-    $DefaultISOPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\W11IntuneEN1.6.iso"
-
     if (Test-Path $DefaultISOPath1) {
         $DefaultISOPath = $DefaultISOPath1
     } elseif (Test-Path $DefaultISOPath2) {
@@ -334,10 +350,6 @@ function Select-Provision {
 
     Add-Type -AssemblyName System.Windows.Forms
 
-    # Define default provision file path
-    $DefaultProvisionPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
-    $DefaultProvisionPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
-
     if (Test-Path $DefaultProvisionPath1) {
         $DefaultProvisionPath = $DefaultProvisionPath1
     } elseif (Test-Path $DefaultProvisionPath2) {
@@ -367,10 +379,6 @@ function Select-DriverFolder {
     param ()
 
     Add-Type -AssemblyName System.Windows.Forms
-
-    # Resolve default path with current username
-    $DefaultDriversPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Drivers"
-    $DefaultDriversPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\Drivers"
 
     if (Test-Path $DefaultDriversPath1) {
         $DefaultDriversPath = $DefaultDriversPath1
