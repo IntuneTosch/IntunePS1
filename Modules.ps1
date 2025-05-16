@@ -1,6 +1,7 @@
-# 0.3
+# 0.4
+Write-Host "Modules Version 0.4" -ForegroundColor Green
+
 # List of required modules with optional minimum versions
-Write-host "Modules Version 0.3" -ForegroundColor Green
 $RequiredModules = @(
     @{ Name = "MSAL.PS" },
     @{ Name = "Microsoft.Graph.Groups" },
@@ -9,16 +10,29 @@ $RequiredModules = @(
     @{ Name = "Microsoft.Graph.Intune" },
     @{ Name = "Intune.USB.Creator" },
     @{ Name = "WindowsAutopilotIntune"; MinimumVersion = "5.4" }
-
 )
 
-# Valid installation paths
+# Valid installation root paths
 $ValidPaths = @(
     "C:\Program Files\PowerShell\Modules",
     "C:\Program Files\WindowsPowerShell\Modules"
 )
 
 $TargetInstallPath = "C:\Program Files\PowerShell\Modules"
+
+# Function to check if a path is within any of the valid base paths
+function Test-IsValidLocation {
+    param (
+        [string]$Path,
+        [string[]]$ValidRoots
+    )
+    foreach ($root in $ValidRoots) {
+        if ($Path.StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $true
+        }
+    }
+    return $false
+}
 
 # Check for admin privileges
 if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
@@ -51,14 +65,15 @@ foreach ($module in $RequiredModules) {
 
     if ($installedModules) {
         foreach ($mod in $installedModules) {
-            $isValidLocation = $ValidPaths -contains (Split-Path $mod.InstalledLocation -Parent)
+            $location = $mod.InstalledLocation
+            $isValidLocation = Test-IsValidLocation -Path $location -ValidRoots $ValidPaths
             $isCorrectVersion = ($minVersion -eq $null -or $mod.Version -ge $minVersion)
 
             if ($isValidLocation -and $isCorrectVersion) {
-                Write-Host "✔ $name is already installed correctly at $($mod.InstalledLocation)." -ForegroundColor Cyan
+                Write-Host "✔ $name is already installed correctly at $location (v$($mod.Version))." -ForegroundColor Cyan
                 $needsInstall = $false
             } elseif (-not $isValidLocation) {
-                Write-Host "✖ $name found at wrong location: $($mod.InstalledLocation). Removing..." -ForegroundColor Red
+                Write-Host "✖ $name found at wrong location: $location. Removing..." -ForegroundColor Red
                 Uninstall-Module -Name $name -AllVersions -Force -ErrorAction SilentlyContinue
             } elseif (-not $isCorrectVersion -and $isValidLocation) {
                 Write-Host "⚠ $name is version $($mod.Version), below required $minVersion. Removing..." -ForegroundColor Yellow
