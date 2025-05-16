@@ -85,11 +85,11 @@ $txtStatus         = $Window.FindName("txtStatus")
 
 # Functions
 function Install-Powershell {
-    # Controleer of PowerShell 7 al geïnstalleerd is
+    # Controleer of PowerShell 7 al geinstalleerd is
     $pwshPath = Get-Command pwsh -ErrorAction SilentlyContinue
 
     if ($pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is al geïnstalleerd. Installatie overgeslagen."
+        $txtStatus.Text = "PowerShell 7 is al geinstalleerd. Installatie overgeslagen."
         return
     }
 
@@ -154,7 +154,7 @@ function Check-Modules {
         if ($module) {
             $statusOutput += "$($module.Name) - Versie: $($module.Version)`r`n"
         } else {
-            $statusOutput += "$moduleName is niet geïnstalleerd.`r`n"
+            $statusOutput += "$moduleName is niet geinstalleerd.`r`n"
         }
     }
 
