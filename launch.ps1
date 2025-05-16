@@ -9,7 +9,7 @@ if (-not $IsAdminRole) {
 
     Invoke-WebRequest -Uri $LaunchScriptURL -OutFile $LaunchScript
 
-    # Re-launch with elevated rights
+    # Herstarten met admin rechten
     Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$LaunchScript`"" -Verb RunAs
     exit
 } else {
