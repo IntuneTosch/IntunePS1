@@ -1,3 +1,4 @@
+#Version 0.8.2
 # Check if the script is run as Administrator
 $IsAdmin = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
 $IsAdminRole = $IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -80,95 +81,53 @@ $txtStatus         = $Window.FindName("txtStatus")
 
 # Functions
 function Install-Powershell {
-    $txtStatus.Text = "Controleren of PowerShell 7 al geïnstalleerd is..."
+    # Controleer of PowerShell 7 al geïnstalleerd is
+    $pwshPath = Get-Command pwsh -ErrorAction SilentlyContinue
 
-    # Use winget list to check if PowerShell 7 is already installed
-    $output = winget list --id Microsoft.PowerShell | Out-String
+    if ($pwshPath) {
+        $txtStatus.Text = "PowerShell 7 is al geïnstalleerd. Installatie overgeslagen."
+        return
+    }
 
-    if ($output -match "Microsoft.PowerShell") {
-        $txtStatus.Text += "`nPowerShell 7 is al geïnstalleerd."
-    } else {
-        $txtStatus.Text += "`nPowerShell 7 is niet gevonden. Installatie wordt gestart..."
+    # Installeer PowerShell 7
+    $txtStatus.Text = "PowerShell 7 niet gevonden. Installatie wordt gestart..."
+    $githubRawUrl = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Powershell7.ps1"
+    $ScriptPowershell = "$env:TEMP\PowershellScript.ps1"
 
-        $installScript = @"
-winget install --id Microsoft.PowerShell --silent
-"@
-        $tempInstallScript = "$env:TEMP\InstallPowerShell.ps1"
-        $installScript | Set-Content -Path $tempInstallScript -Encoding UTF8
-
-        # Launch external process
-        $process = Start-Process powershell.exe -ArgumentList "-NoProfile", "-WindowStyle", "Hidden", "-File", "`"$tempInstallScript`"" -PassThru
-        $process.WaitForExit()
-
-        # Re-check installation
+    try {
+        $txtStatus.Text += "`nDownloaden van script van GitHub..."
+        Invoke-WebRequest -Uri $githubRawUrl -OutFile $ScriptPowershell -UseBasicParsing
         Start-Sleep -Seconds 2
-        $verify = winget list --id Microsoft.PowerShell | Out-String
-
-        if ($verify -match "Microsoft.PowerShell") {
-            $txtStatus.Text += "`nPowerShell 7 is succesvol geïnstalleerd."
-        } else {
-            $txtStatus.Text += "`nInstallatie mislukt of PowerShell 7 is nog steeds niet gevonden."
-        }
-
-        Remove-Item $tempInstallScript -Force -ErrorAction SilentlyContinue
+        Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPowershell`""
+        $txtStatus.Text += "`nInstallatie van PowerShell 7 is gestart in een nieuw venster."
+        $txtStatus.Text += "`n`nHertstart de Computer na installatie"
+    }
+    catch {
+        $txtStatus.Text += "`nFout tijdens downloaden of starten van installatie: $_"
     }
 }
 function Install-Modules {
-    $txtStatus.Text = "Bezig met controleren/installeren van modules..."
-    Start-Sleep -Seconds 1
 
-    $modules = @(
-        @{ Name = "MSAL.PS"; MinimumVersion = $null },
-        @{ Name = "Intune.USB.Creator"; MinimumVersion = $null },
-        @{ Name = "Microsoft.Graph.Authentication"; MinimumVersion = $null },
-        @{ Name = "WindowsAutopilotIntune"; MinimumVersion = "5.4" },
-        @{ Name = "Microsoft.Graph.Groups"; MinimumVersion = $null },
-        @{ Name = "Microsoft.Graph.Identity.DirectoryManagement"; MinimumVersion = $null }
-    )
+    # Controleer of pwsh.exe beschikbaar is
+    $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
 
-    $syncContext = [System.Threading.SynchronizationContext]::Current
-
-    foreach ($module in $modules) {
-        if (Get-Module -ListAvailable -Name $module.Name) {
-            $syncContext.Post({ param($msg) $txtStatus.Text += "`n$msg" }, "$($module.Name) is al geïnstalleerd.")
-        } else {
-            $arguments = if ($module.MinimumVersion) {
-                "-NoProfile -Command `"Install-Module -Name '$($module.Name)' -MinimumVersion $($module.MinimumVersion) -Scope AllUsers -Force -Repository PSGallery`""
-            } else {
-                "-NoProfile -Command `"Install-Module -Name '$($module.Name)' -Scope AllUsers -Force -Repository PSGallery`""
-            }
-
-            $process = New-Object System.Diagnostics.Process
-            $process.StartInfo.FileName = "powershell.exe"
-            $process.StartInfo.Arguments = $arguments
-            $process.StartInfo.RedirectStandardOutput = $true
-            $process.StartInfo.RedirectStandardError = $true
-            $process.StartInfo.UseShellExecute = $false
-            $process.StartInfo.CreateNoWindow = $true
-
-            $process.Start() | Out-Null
-
-            while (-not $process.HasExited) {
-                $line = $process.StandardOutput.ReadLine()
-                if ($line) {
-                    $syncContext.Post({ param($msg) $txtStatus.Text += "`n$msg" }, $line)
-                }
-            }
-
-            while (!$process.StandardOutput.EndOfStream) {
-                $line = $process.StandardOutput.ReadLine()
-                $syncContext.Post({ param($msg) $txtStatus.Text += "`n$msg" }, $line)
-            }
-
-            if ($process.ExitCode -eq 0) {
-                $syncContext.Post({ param($msg) $txtStatus.Text += "`n$msg" }, "$($module.Name) succesvol geïnstalleerd.")
-            } else {
-                $errorText = $process.StandardError.ReadToEnd()
-                $syncContext.Post({ param($msg) $txtStatus.Text += "`n$msg" }, "Fout bij installeren van $($module.Name): $errorText")
-            }
-        }
+    if (-not $pwshPath) {
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geïnstalleerd."
+        return
     }
+
+    $txtStatus.Text = "PowerShell 7 is gevonden. Downloaden van script van GitHub..."
+    
+    $githubRawUrl = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Modules.ps1"
+    $ModulesScript = "$env:TEMP\ModulesScript.ps1"
+    Invoke-WebRequest -Uri $githubRawUrl -OutFile $ModulesScript
+
+    $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
+    Start-Sleep -Seconds 2
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ModulesScript`""
+    $txtStatus.Text += "`nExtern venster geopend."
 }
+
 
 function Check-Modules {
     $txtStatus.Text = "Checking installed modules..."
@@ -215,11 +174,11 @@ function Create-USB {
 function Create-USBNP {
     $txtStatus.Text = "Downloaden van Script van GitHub..."
     $githubRawUrl = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/mainnp.ps1"
-    $tempScript = "$env:TEMP\MainFunctionScript.ps1"
-    Invoke-WebRequest -Uri $githubRawUrl -OutFile $tempScript
+    $tempScriptNP = "$env:TEMP\MainFunctionScriptNP.ps1"
+    Invoke-WebRequest -Uri $githubRawUrl -OutFile $tempScriptNP
     $txtStatus.Text = "Openen van Script in een nieuw venster..."
     Start-Sleep -Seconds 2
-    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempScript`""
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempScriptNP`""
     $txtStatus.Text += "`nExtern venster geopend. Zorg ervoor dat je zelf het provisioning-bestand kopieert."
 }
 
