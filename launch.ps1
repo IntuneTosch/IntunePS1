@@ -28,7 +28,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune 1.1" Height="360" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 1.2" Height="360" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -110,6 +110,7 @@ function Install-Powershell {
         $txtStatus.Text += "`nFout tijdens downloaden of starten van installatie: $_"
     }
 }
+
 function Install-Modules {
 
     # Controleer of pwsh.exe beschikbaar is
