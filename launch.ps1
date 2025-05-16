@@ -116,7 +116,7 @@ function Install-Modules {
         return
     }
 
-    $txtStatus.Text = "PowerShell 7 is gevonden. Downloaden van script van GitHub..."
+    $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
     
     $githubRawUrl = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Modules.ps1"
     $ModulesScript = "$env:TEMP\ModulesScript.ps1"
