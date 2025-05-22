@@ -3,7 +3,7 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "1.7.1"
+$Scriptversion = "1.7.2"
 
 # Define default ISO file path
 $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11Intune1.7.iso"
@@ -510,7 +510,7 @@ $USBImages = Select-Drive -volumeLabel "Images"
 Get-Item -Path $DriverFolder
 Copy-Item -Path $DriverFolder -Destination $USBImages\ -Recurse -Force
 
-Remove-Item $env:TEMP\MainFunctionScript.ps1
+Remove-Item $env:TEMP\CreateUSBScript.ps1
 ""
 ""
 ""
