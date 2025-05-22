@@ -2,6 +2,9 @@
 ######                                          Variable                                                 ######
 ###############################################################################################################
 
+#Script Version
+$Scriptversion = 1.8
+
 # Define default ISO file path
 $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11Intune1.7.iso"
 $DefaultISOPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\W11Intune1.7.iso"
@@ -21,7 +24,7 @@ $DefaultDriversPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek
 Clear-Host
 $welcomeScreen = "IF9fX19fX19fXyAgICBfX19fX19fXyAgICAgX19fX19fX18gICAgICBfX19fX19fXyAgICAgX19fICBfX18gICAgIA0KfFxfX18gICBfX19cIHxcICAgX18gIFwgICB8XCAgIF9fX19cICAgIHxcICAgX19fX1wgICB8XCAgXHxcICBcICAgIA0KXHxfX18gXCAgXF98IFwgXCAgXHxcICBcICBcIFwgIFxfX198XyAgIFwgXCAgXF9fX3wgICBcIFwgIFxcXCAgXCAgIA0KICAgICBcIFwgIFwgICBcIFwgIFxcXCAgXCAgXCBcX19fX18gIFwgICBcIFwgIFwgICAgICAgXCBcICAgX18gIFwgIA0KICAgICAgXCBcICBcICAgXCBcICBcXFwgIFwgIFx8X19fX3xcICBcICAgXCBcICBcX19fXyAgIFwgXCAgXCBcICBcIA0KICAgICAgIFwgXCAgXCAgIFwgXCAgXFxcICBcICAgX19fX1xfXCAgXCAgIFwgXCAgICAgICBcICBcIFwgIFwgXCAgXA0KICAgICAgICBcIFxfX1wgICBcIFxfX19fX19fXCAgfFxfX19fX19fX1wgICBcIFxfX19fX19fXCAgXCBcX19cIFxfX1wNCiAgICAgICAgIFx8X198ICAgIFx8X19fX19fX3wgIFx8X19fX19fX19ffCAgIFx8X19fX19fX3wgICBcfF9ffFx8X198IA0KICAgICAgICAgICAgICAgICAgICBXaW5kb3dzIEVuZHBvaW50IFByb3Zpc2lvbmluZyBUb29sDQogICAgICAgICAgICAgICAgICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq"
 Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))            
-Write-host "Version 1.7 - Nederlands" -ForegroundColor DarkRed
+Write-host "Version $Scriptversion - Nederlands" -ForegroundColor DarkRed
 Start-Sleep -Seconds 3
 Clear-Host
 ###############################################################################################################
@@ -511,8 +514,8 @@ Remove-Item $env:TEMP\MainFunctionScript.ps1
 ""
 ""
 ""
-Write-host "USB Is Succesvol aangemaakt" -ForegroundColor Green
-Start-Sleep -Seconds 5
+Write-Host "USB Is Succesvol gemaakt, Druk op een toets om dit venster af te sluiten." -ForegroundColor Green
+$Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 exit 0  # 0 = success, non-zero = error
 ""
 ""
