@@ -16,16 +16,10 @@ if (-not $IsAdminRole) {
     $psi.FileName = "pwsh.exe"
     $psi.Arguments = $command
     $psi.Verb = "runas"
-    $psi.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden  # Ensure the window stays hidden
+    $psi.WindowStyle = "Hidden"
     [System.Diagnostics.Process]::Start($psi)
     exit
 } else {
-    # The script is already running with elevated privileges — make sure to hide the window here too
-    $ps = Get-Process -Id $PID
-    if ($ps) {
-        $ps.MainWindowHandle = [IntPtr]::Zero
-        $ps.StartInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden  # Make the window hidden
-    }
     Write-Host "The script is running with elevated privileges."
 }
 
@@ -41,7 +35,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune Test 1.7" Height="390" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 1.6" Height="390" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -122,7 +116,7 @@ function Install-Powershell {
         $txtStatus.Text += "`nDownloaden van script van GitHub..."
         Invoke-WebRequest -Uri $githubRawUrlPS -OutFile $ScriptPowershell -UseBasicParsing
         Start-Sleep -Seconds 2
-        Start-Process powershell.exe -WindowStyle Hidden -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPowershell`""
+        Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPowershell`""
         $txtStatus.Text += "`nInstallatie van PowerShell 7 is gestart in een nieuw venster."
         $txtStatus.Text += "`n`nHertstart de Computer na installatie"
     }
@@ -132,6 +126,7 @@ function Install-Powershell {
 }
 
 function Install-Modules {
+
     # Controleer of pwsh.exe beschikbaar is
     $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
 
@@ -148,16 +143,17 @@ function Install-Modules {
 
     $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
-    Start-Process pwsh.exe -WindowStyle Hidden -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ModulesScript`""
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ModulesScript`""
     $txtStatus.Text += "`nExtern venster geopend."
 }
 
 function Check-Modules {
+
     # Controleer of pwsh.exe beschikbaar is
     $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
 
     if (-not $pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
         return
     }
 
@@ -169,21 +165,22 @@ function Check-Modules {
 
     $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
-    Start-Process pwsh.exe -WindowStyle Hidden -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CheckModulesScript`""
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CheckModulesScript`""
     $txtStatus.Text += "`n`nModules worden nagelopen in extern venster."
 }
 
 function Create-USB {
+
     # Controleer of pwsh.exe beschikbaar is
     $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
 
     if (-not $pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is niet gevonden.`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
         return
     }
 
     $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
-    
+
     # Determine selected language
     $selectedLanguage = $cmbLanguage.SelectedItem.Content
 
@@ -201,21 +198,22 @@ function Create-USB {
 
     $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
-    Start-Process pwsh.exe -WindowStyle Hidden -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CreateUSBScript`""
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CreateUSBScript`""
     $txtStatus.Text += "`nExtern venster geopend."
 }
 
 function Create-USBNP {
+
     # Controleer of pwsh.exe beschikbaar is
     $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
 
     if (-not $pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is niet gevonden.`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
         return
     }
 
     $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
-    
+
     # Determine selected language
     $selectedLanguage = $cmbLanguage.SelectedItem.Content
 
@@ -233,7 +231,7 @@ function Create-USBNP {
 
     $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
-    Start-Process pwsh.exe -WindowStyle Hidden -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CreateUSBScriptNP`""
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CreateUSBScriptNP`""
     $txtStatus.Text += "`nExtern venster geopend."
 }
 
