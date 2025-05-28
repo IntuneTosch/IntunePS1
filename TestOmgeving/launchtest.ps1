@@ -1,4 +1,4 @@
-#Version 1.6
+#Version 1.7
 # Check for admin rights
 $IsAdmin = [Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()
 $IsAdminRole = $IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -35,7 +35,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune 1.6" Height="390" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 1.7" Height="390" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -103,7 +103,7 @@ function Install-Powershell {
     $pwshPath = Get-Command pwsh -ErrorAction SilentlyContinue
 
     if ($pwshPath) {
-        $txtStatus.Text = "PowerShell 7 is al geinstalleerd. Installatie overgeslagen."
+        $txtStatus.Text = "`n`nPowerShell 7 is al geinstalleerd. Installatie overgeslagen."
         return
     }
 
@@ -144,7 +144,7 @@ function Install-Modules {
     $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
     Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ModulesScript`""
-    $txtStatus.Text += "`nExtern venster geopend."
+    $txtStatus.Text += "`n`nInstallatie van Modules in een extern venster geopend."
 }
 
 function Check-Modules {
@@ -199,7 +199,7 @@ function Create-USB {
     $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
     Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CreateUSBScript`""
-    $txtStatus.Text += "`nExtern venster geopend."
+    $txtStatus.Text += "`n`nCreatie van USB in de taal $selectedLanguage is gestart in een extern venster."
 }
 
 function Create-USBNP {
@@ -232,7 +232,7 @@ function Create-USBNP {
     $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
     Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CreateUSBScriptNP`""
-    $txtStatus.Text += "`nExtern venster geopend."
+    $txtStatus.Text += "`n`nCreatie van USB zonder profiel in de taal $selectedLanguage is gestart in een extern venster."
 }
 
 # Event Handlers
