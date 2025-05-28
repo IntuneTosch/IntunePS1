@@ -1,3 +1,4 @@
+#Version 1.6
 # Check for admin rights
 $IsAdmin = [Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()
 $IsAdminRole = $IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -28,7 +29,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune 1.5" Height="390" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 1.6" Height="390" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -140,36 +141,26 @@ function Install-Modules {
     $txtStatus.Text += "`nExtern venster geopend."
 }
 
-
 function Check-Modules {
-    $txtStatus.Text = "Checking installed modules..."
-    Start-Sleep -Seconds 1
 
-    $modulesToCheck = @(
-        "MSAL.PS",
-        "Intune.USB.Creator",
-        "Microsoft.Graph.Authentication",
-        "WindowsAutopilotIntune",
-        "Microsoft.Graph.Groups",
-        "Microsoft.Graph.Identity.DirectoryManagement"
-    )
+    # Controleer of pwsh.exe beschikbaar is
+    $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
 
-    $statusOutput = ""
-
-    foreach ($moduleName in $modulesToCheck) {
-        $module = Get-InstalledModule -Name $moduleName -ErrorAction SilentlyContinue
-        if ($module) {
-            $statusOutput += "$($module.Name) - Versie: $($module.Version)`r`n"
-        } else {
-            $statusOutput += "$moduleName is niet geinstalleerd.`r`n"
-        }
+    if (-not $pwshPath) {
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
+        return
     }
 
-    if ($statusOutput) {
-        $txtStatus.Text = "Modules check resultaat:`n" + $statusOutput
-    } else {
-        $txtStatus.Text = "Geen modules gevonden."
-    }
+    $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
+    
+    $githubRawUrlCheckModules = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Requirements/CheckModules.ps1"
+    $CheckModulesScript = "$env:TEMP\CheckModulesScript.ps1"
+    Invoke-WebRequest -Uri $githubRawUrlCheckModules -OutFile $CheckModulesScript
+
+    $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
+    Start-Sleep -Seconds 2
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CheckModulesScript`""
+    $txtStatus.Text += "`n`nModules worden nagelopen in extern venster."
 }
 
 function Create-USB {

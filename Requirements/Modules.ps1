@@ -1,5 +1,4 @@
-# 0.4
-Write-Host "Modules Version 0.4" -ForegroundColor Green
+Write-Host "Modules Version 0.5" -ForegroundColor Green
 
 # List of required modules with optional minimum versions
 $RequiredModules = @(
@@ -96,4 +95,5 @@ foreach ($module in $RequiredModules) {
 }
 
 Write-Host "`n✅ Alle modules zijn gevalideerd en correct geïnstalleerd. Je wordt nu teruggeleid naar het hoofdmenu." -ForegroundColor Green
+Remove-Item $env:TEMP\ModulesScript.ps1
 Start-Sleep -Seconds 5

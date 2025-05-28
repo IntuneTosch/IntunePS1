@@ -1,15 +1,18 @@
+Write-Host "Modules Version 0.2" -ForegroundColor Green
 # Ensure winget is available
 if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-    Write-Error "winget is not installed or not available in the system PATH."
+    Write-Error "winget is niet geïnstalleerd of niet beschikbaar in het systeempad."
     exit 1
 }
 
 # Install PowerShell 7 using winget and accept terms automatically
 try {
-    Write-Host "Installing PowerShell 7 using winget..."
+    Write-Host "PowerShell 7 wordt geïnstalleerd met winget..."
     winget install --id Microsoft.Powershell --source winget --accept-package-agreements --accept-source-agreements --silent
-    Write-Host "PowerShell 7 installation completed."
+    Write-Host "Installatie van PowerShell 7 voltooid. Druk op een toets om door te gaan."
 } catch {
-    Write-Error "An error occurred while installing PowerShell 7: $_"
+    Write-Error "Er is een fout opgetreden tijdens het installeren van PowerShell 7: $_ Druk op een toets om door te gaan."
 }
-exit
+$Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+Remove-Item $env:TEMP\CheckModulesScript.ps1
+exit 0  # 0 = success, non-zero = error

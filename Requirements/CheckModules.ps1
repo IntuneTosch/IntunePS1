@@ -1,7 +1,7 @@
 # Check-Modules.ps1
-Write-Host "Check Modules Version 0.2" -ForegroundColor Green
+Write-Host "Check Modules Version 0.3" -ForegroundColor Green
 
-Write-Host "Checking installed modules..."
+Write-Host "`nBezig met controleren van geïnstalleerde modules..."
 Start-Sleep -Seconds 1
 
 $modulesToCheck = @(
@@ -41,4 +41,5 @@ if ($results.Count -gt 0) {
 
 Write-Host "`nModules zijn nagelopen. Druk op een toets om terug te gaan naar het menu" -ForegroundColor Green
 $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+Remove-Item $env:TEMP\CheckModulesScript.ps1
 exit 0  # 0 = success, non-zero = error
