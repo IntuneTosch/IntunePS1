@@ -16,10 +16,16 @@ if (-not $IsAdminRole) {
     $psi.FileName = "pwsh.exe"
     $psi.Arguments = $command
     $psi.Verb = "runas"
-    $psi.WindowStyle = "Hidden"
+    $psi.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden  # Ensure the window stays hidden
     [System.Diagnostics.Process]::Start($psi)
     exit
 } else {
+    # The script is already running with elevated privileges — make sure to hide the window here too
+    $ps = Get-Process -Id $PID
+    if ($ps) {
+        $ps.MainWindowHandle = [IntPtr]::Zero
+        $ps.StartInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden  # Make the window hidden
+    }
     Write-Host "The script is running with elevated privileges."
 }
 
