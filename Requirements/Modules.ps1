@@ -1,4 +1,4 @@
-Write-Host "Modules Version 0.5" -ForegroundColor Green
+Write-Host "Modules Version 0.6" -ForegroundColor Green
 
 # List of required modules with optional minimum versions
 $RequiredModules = @(
@@ -94,6 +94,7 @@ foreach ($module in $RequiredModules) {
     }
 }
 
-Write-Host "`n✅ Alle modules zijn gevalideerd en correct geïnstalleerd. Je wordt nu teruggeleid naar het hoofdmenu." -ForegroundColor Green
+Write-Host "`n✅ Alle modules zijn gevalideerd en correct geïnstalleerd. Druk op een toets om door te gaan." -ForegroundColor Green
+$Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 Remove-Item $env:TEMP\ModulesScript.ps1
-Start-Sleep -Seconds 5
+exit 0  # 0 = success, non-zero = error
