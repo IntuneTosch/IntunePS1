@@ -5,10 +5,6 @@
 #Script Version
 $Scriptversion = "1.8.0"
 
-# Define default ISO file path
-$DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11Intune1.7.iso"
-$DefaultISOPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\W11Intune1.7.iso"
-
 # Define default provision file path
 $DefaultProvisionPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
 $DefaultProvisionPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
@@ -24,7 +20,7 @@ $DefaultDriversPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek
 Clear-Host
 $welcomeScreen = "IF9fX19fX19fXyAgICBfX19fX19fXyAgICAgX19fX19fX18gICAgICBfX19fX19fXyAgICAgX19fICBfX18gICAgIA0KfFxfX18gICBfX19cIHxcICAgX18gIFwgICB8XCAgIF9fX19cICAgIHxcICAgX19fX1wgICB8XCAgXHxcICBcICAgIA0KXHxfX18gXCAgXF98IFwgXCAgXHxcICBcICBcIFwgIFxfX198XyAgIFwgXCAgXF9fX3wgICBcIFwgIFxcXCAgXCAgIA0KICAgICBcIFwgIFwgICBcIFwgIFxcXCAgXCAgXCBcX19fX18gIFwgICBcIFwgIFwgICAgICAgXCBcICAgX18gIFwgIA0KICAgICAgXCBcICBcICAgXCBcICBcXFwgIFwgIFx8X19fX3xcICBcICAgXCBcICBcX19fXyAgIFwgXCAgXCBcICBcIA0KICAgICAgIFwgXCAgXCAgIFwgXCAgXFxcICBcICAgX19fX1xfXCAgXCAgIFwgXCAgICAgICBcICBcIFwgIFwgXCAgXA0KICAgICAgICBcIFxfX1wgICBcIFxfX19fX19fXCAgfFxfX19fX19fX1wgICBcIFxfX19fX19fXCAgXCBcX19cIFxfX1wNCiAgICAgICAgIFx8X198ICAgIFx8X19fX19fX3wgIFx8X19fX19fX19ffCAgIFx8X19fX19fX3wgICBcfF9ffFx8X198IA0KICAgICAgICAgICAgICAgICAgICBXaW5kb3dzIEVuZHBvaW50IFByb3Zpc2lvbmluZyBUb29sDQogICAgICAgICAgICAgICAgICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq"
 Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))            
-Write-host "Version $Scriptversion - Nederlands" -ForegroundColor DarkRed
+Write-host "Version $Scriptversion - Custom ISO" -ForegroundColor DarkRed
 Start-Sleep -Seconds 3
 Clear-Host
 ###############################################################################################################
@@ -322,26 +318,14 @@ function Select-ISO {
 
     Add-Type -AssemblyName System.Windows.Forms
 
-    if (Test-Path $DefaultISOPath1) {
-        $DefaultISOPath = $DefaultISOPath1
-    } elseif (Test-Path $DefaultISOPath2) {
-        $DefaultISOPath = $DefaultISOPath2
-    } else {
-        $DefaultISOPath = ""
-    }
+    $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $OpenFileDialog.Filter = 'ISO Files (*.iso)|*.iso'
+    $OpenFileDialog.Title = "Selecteer de Windows ISO bestand"
 
-    if (Test-Path $DefaultISOPath) {
-        return $DefaultISOPath
+    if ($OpenFileDialog.ShowDialog() -eq 'OK') {
+        return $OpenFileDialog.FileName
     } else {
-        $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
-        $OpenFileDialog.Filter = 'ISO Files (*.iso)|*.iso'
-        $OpenFileDialog.Title = "Selecteer de Windows ISO bestand"
-
-        if ($OpenFileDialog.ShowDialog() -eq 'OK') {
-            return $OpenFileDialog.FileName
-        } else {
-            return $null
-        }
+        return $null
     }
 }
 

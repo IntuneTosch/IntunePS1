@@ -3,7 +3,7 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "1.7.2"
+$Scriptversion = "1.8.0"
 
 # Define default ISO file path
 $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11Intune1.7.iso"
@@ -207,8 +207,20 @@ Start-Sleep -Seconds 2
 
 ##Selecteren ISO:
 $WindowsISO = Select-ISO
+if (-not $WindowsISO -or -not (Test-Path $WindowsISO)) {
+    Write-Error "Er is geen geldig ISO-bestand geselecteerd. Het script wordt beëindigd."
+    exit 1
+}
 $DriverFolder = Select-DriverFolder
+if (-not $DriverFolder -or -not (Test-Path $DriverFolder)) {
+    Write-Error "Er is geen geldig ISO-bestand geselecteerd. Het script wordt beëindigd."
+    exit 1
+}
 $ProvisionInvoke = Select-Provision
+if (-not $ProvisionInvoke -or -not (Test-Path $ProvisionInvoke)) {
+    Write-Error "Er is geen geldig ISO-bestand geselecteerd. Het script wordt beëindigd."
+    exit 1
+}
 
 Write-Host "Alle voorbereidingen zijn succesvol afgerond." -ForegroundColor Red
 Start-Sleep -Seconds 2

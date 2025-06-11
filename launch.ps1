@@ -1,4 +1,4 @@
-#Version 1.7
+#Version 1.8
 # Check for admin rights
 $IsAdmin = [Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()
 $IsAdminRole = $IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -35,7 +35,7 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune 1.7" Height="390" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 1.8" Height="390" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -55,8 +55,9 @@ $XAML = @"
     
         <!-- New Language Dropdown + Create USB -->
             <ComboBox x:Name="cmbLanguage" Margin="10,25,10,5" SelectedIndex="0">
-                <ComboBoxItem>Nederlands</ComboBoxItem>
-                <ComboBoxItem>Engels</ComboBoxItem>
+                <ComboBoxItem>Nederlandse ISO</ComboBoxItem>
+                <ComboBoxItem>Engelse ISO</ComboBoxItem>
+                 <ComboBoxItem>Custom ISO</ComboBoxItem>
             </ComboBox>
                 <Button x:Name="btnCreateUSB" Content="Create USB" Margin="10,5,10,5"
                     Background="#ff6f00" Foreground="White" Padding="5"/>
@@ -184,10 +185,12 @@ function Create-USB {
     # Determine selected language
     $selectedLanguage = $cmbLanguage.SelectedItem.Content
 
-    if ($selectedLanguage -eq "Nederlands") {
+    if ($selectedLanguage -eq "Nederlandse ISO") {
         $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOMetProfiel/main_nl.ps1"
-    } elseif ($selectedLanguage -eq "Engels") {
+    } elseif ($selectedLanguage -eq "Engelse ISO") {
         $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOMetProfiel/main_en.ps1"
+    } elseif ($selectedLanguage -eq "Custom ISO") {
+        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOMetProfiel/main_custom.ps1"
     } else {
         $txtStatus.Text += "`nGeen geldige taal geselecteerd. Kies een taal."
         return
@@ -199,7 +202,7 @@ function Create-USB {
     $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
     Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CreateUSBScript`""
-    $txtStatus.Text += "`n`nCreatie van USB in de taal $selectedLanguage is gestart in een extern venster."
+    $txtStatus.Text += "`n`nCreatie van USB $selectedLanguage is gestart in een extern venster."
 }
 
 function Create-USBNP {
@@ -217,10 +220,12 @@ function Create-USBNP {
     # Determine selected language
     $selectedLanguage = $cmbLanguage.SelectedItem.Content
 
-    if ($selectedLanguage -eq "Nederlands") {
-        $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_nl.ps1"
-    } elseif ($selectedLanguage -eq "Engels") {
-        $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_en.ps1"
+    if ($selectedLanguage -eq "Nederlandse ISO") {
+        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_nl.ps1"
+    } elseif ($selectedLanguage -eq "Engelse ISO") {
+        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_en.ps1"
+    } elseif ($selectedLanguage -eq "Custom ISO") {
+        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_custom.ps1"
     } else {
         $txtStatus.Text += "`nGeen geldige taal geselecteerd. Kies een taal."
         return
@@ -232,7 +237,7 @@ function Create-USBNP {
     $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
     Start-Sleep -Seconds 2
     Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CreateUSBScriptNP`""
-    $txtStatus.Text += "`n`nCreatie van USB zonder profiel in de taal $selectedLanguage is gestart in een extern venster."
+    $txtStatus.Text += "`n`nCreatie van USB zonder profiel $selectedLanguage is gestart in een extern venster."
 }
 
 # Event Handlers
