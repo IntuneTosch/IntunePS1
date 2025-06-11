@@ -221,11 +221,11 @@ function Create-USBNP {
     $selectedLanguage = $cmbLanguage.SelectedItem.Content
 
     if ($selectedLanguage -eq "Nederlandse ISO") {
-        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_nl.ps1"
+        $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_nl.ps1"
     } elseif ($selectedLanguage -eq "Engelse ISO") {
-        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_en.ps1"
+        $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_en.ps1"
     } elseif ($selectedLanguage -eq "Custom ISO") {
-        $githubRawUrlCreateUSB = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_custom.ps1"
+        $githubRawUrlCreateUSBNP = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/Production/ISOZonderProfiel/mainnp_custom.ps1"
     } else {
         $txtStatus.Text += "`nGeen geldige taal geselecteerd. Kies een taal."
         return
