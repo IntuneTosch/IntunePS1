@@ -3,7 +3,7 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "1.7.3"
+$Scriptversion = "1.7.4"
 
 # Define default provision file path
 $DefaultProvisionPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
@@ -88,30 +88,61 @@ else {
 ###############################################################################################################
 
 function GrabProfiles() {
+    # Define Graph API endpoint
+    $graphApiVersion = "beta"
+    $Resource = "deviceManagement/windowsAutopilotDeploymentProfiles"
+    $uri = "https://graph.microsoft.com/$graphApiVersion/$Resource"
 
-    # Defining Variables
-$graphApiVersion = "beta"
-$Resource = "deviceManagement/windowsAutopilotDeploymentProfiles"
-
-$uri = "https://graph.microsoft.com/$graphApiVersion/$Resource"
-$response = Invoke-MGGraphRequest -Uri $uri -Method Get -OutputType PSObject
-
+    # Initial request
+    $response = Invoke-MGGraphRequest -Uri $uri -Method Get -OutputType PSObject
     $profiles = $response.value
-
     $profilesNextLink = $response."@odata.nextLink"
 
+    # Handle pagination
     while ($null -ne $profilesNextLink) {
-        $profilesResponse = (Invoke-MGGraphRequest -Uri $profilesNextLink -Method Get -outputType PSObject)
+        $profilesResponse = Invoke-MGGraphRequest -Uri $profilesNextLink -Method Get -OutputType PSObject
         $profilesNextLink = $profilesResponse."@odata.nextLink"
         $profiles += $profilesResponse.value
     }
 
-    $selectedprofile = $profiles | out-gridview -passthru -title "Select a profile"
-    return $selectedprofile.id
+    if (-not $profiles) {
+        Write-Host "Geen autopilot profielen gevonden." -ForegroundColor Yellow
+        return $null
+    }
 
+    # Display profiles as numbered list with extra fields
+    Write-Host ""
+    Write-Host "Beschikbare Autopilot Profielen:`n" -ForegroundColor Cyan
+
+    $i = 1
+    foreach ($profile in $profiles) {
+        $displayName         = $profile.displayName
+        $language            = if ($profile.language) { $profile.language } else { "[None]" }
+        $createdDateTime     = $profile.createdDateTime
+        $modifiedDateTime    = $profile.lastModifiedDateTime
+        $description         = if ($profile.description) { $profile.description } else { "[No description]" }
+        $deviceNameTemplate  = if ($profile.deviceNameTemplate) { $profile.deviceNameTemplate } else { "[None]" }
+
+        Write-Host ("[{0}] {1}" -f $i, $displayName) -ForegroundColor White
+        Write-Host ("     Taal:         {0}" -f $language)
+        Write-Host ("     Gecreëerd:            {0}" -f $createdDateTime)
+        Write-Host ("     Aangepast:            {0}" -f $modifiedDateTime)
+        Write-Host ("     Beschrijving:         {0}" -f $description)
+        Write-Host ("     Apparaatsjabloon:     {0}" -f $deviceNameTemplate)
+        Write-Host ""
+        $i++
+    }
+
+    $selection = Read-Host "Geef het nummer op van het profiel dat je wilt selecteren."
+
+    if ($selection -match '^\d+$' -and [int]$selection -ge 1 -and [int]$selection -le $profiles.Count) {
+        $selectedProfile = $profiles[([int]$selection - 1)]
+        return $selectedProfile.id
+    } else {
+        Write-Host "Invalid selection." -ForegroundColor Red
+        return $null
+    }
 }
-
-
 function grabandoutput() {
 [cmdletbinding()]
 
@@ -275,11 +306,11 @@ Connect-ToGraph -TenantId $tenantID -AppId $app -AppSecret $secret
         }
         else {
             if ($version -eq 2) {
-                write-host "Version 2 module detected" -ForegroundColor Green
+                write-host "Version 2 module detected" -ForegroundColor Cyan
                 ""
             }
             else {
-                write-host "Version 1 Module Detected" -ForegroundColor Green
+                write-host "Version 1 Module Detected" -ForegroundColor Cyan
                 ""
                 Select-MgProfile -Name Beta
             }
