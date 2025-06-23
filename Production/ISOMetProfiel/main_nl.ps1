@@ -3,7 +3,7 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "1.7.4"
+$Scriptversion = "1.7.5"
 
 # Define default ISO file path
 $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11Intune1.7.iso"
@@ -127,10 +127,10 @@ function GrabProfiles() {
         $description         = if ($profile.description) { $profile.description } else { "[No description]" }
         $deviceNameTemplate  = if ($profile.deviceNameTemplate) { $profile.deviceNameTemplate } else { "[None]" }
 
-        Write-Host ("[{0}] {1}" -f $i, $displayName) -ForegroundColor White
-        Write-Host ("     Taal:                 {0}" -f $language)
+        Write-Host ("[{0}] Profiel: {1}" -f $i, $displayName) -ForegroundColor White
         Write-Host ("     Gecreëerd:            {0}" -f $createdDateTime)
         Write-Host ("     Aangepast:            {0}" -f $modifiedDateTime)
+        Write-Host ("     Taal:                 {0}" -f $language)
         Write-Host ("     Beschrijving:         {0}" -f $description)
         Write-Host ("     Apparaatsjabloon:     {0}" -f $deviceNameTemplate)
         Write-Host ""
