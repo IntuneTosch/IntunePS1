@@ -124,7 +124,7 @@ function GrabProfiles() {
         $deviceNameTemplate  = if ($profile.deviceNameTemplate) { $profile.deviceNameTemplate } else { "[None]" }
 
         Write-Host ("[{0}] {1}" -f $i, $displayName) -ForegroundColor White
-        Write-Host ("     Taal:         {0}" -f $language)
+        Write-Host ("     Taal:                 {0}" -f $language)
         Write-Host ("     Gecreëerd:            {0}" -f $createdDateTime)
         Write-Host ("     Aangepast:            {0}" -f $modifiedDateTime)
         Write-Host ("     Beschrijving:         {0}" -f $description)
