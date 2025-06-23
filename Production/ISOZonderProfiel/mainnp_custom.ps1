@@ -98,7 +98,7 @@ function Select-Drive($volumeLabel) {
     } elseif ($Drives.Count -eq 1) {
         return ($Drives[0] + ":\")
     } else {
-        Write-Host "Er zijn geen drives gevonden met de VolumeLabel '$volumeLabel'."  -ForegroundColor DarkRed
+        Write-Error "Er zijn geen drives gevonden met de VolumeLabel '$volumeLabel'." -ErrorAction Stop
         return $null
     }
 }
@@ -210,6 +210,20 @@ Start-Sleep -Seconds 2
 Clear-Host
 Write-Host "Installatie van USB gaat nu gebeuren" -ForegroundColor Green -BackgroundColor Black
 Start-Sleep -Seconds 3
+
+#Kijken of er een USB beschikbaar is
+$usbDrives = Get-WmiObject Win32_LogicalDisk | Where-Object {
+    $_.DriveType -eq 2 -and $_.VolumeName -ne $null
+}
+
+if ($usbDrives) {
+    Write-Host "Er is een USB-opslagapparaat aangesloten:" -ForegroundColor Green
+    $usbDrives | ForEach-Object {
+        Write-Host "Drive: $($_.DeviceID) - Label: $($_.VolumeName)"
+    }
+} else {
+    Write-Error "Er is geen USB-opslagapparaat aangesloten." -ErrorAction Stop
+}
 
 ##Installatie Endpoint Stick:
 Publish-ImageToUSB -winPEPath "https://githublfs.blob.core.windows.net/storage/WinPE.zip" -windowsIsoPath $WindowsISO
