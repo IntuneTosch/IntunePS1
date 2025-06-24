@@ -3,19 +3,22 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "1.7.3"
+$Scriptversion = "1.7.6"
 
 # Define default ISO file path
 $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11IntuneEnglish1.7.iso"
 $DefaultISOPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\W11IntuneEnglish1.7.iso"
+$DefaultISOPath3 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documents\General\ISO\Windows 11 Intune\W11IntuneEnglish1.7.iso"
 
 # Define default provision file path
 $DefaultProvisionPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
 $DefaultProvisionPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
+$DefaultProvisionPath3 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documents\General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
 
 # Resolve default path with current username
 $DefaultDriversPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Drivers"
 $DefaultDriversPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\Drivers"
+$DefaultDriversPath3 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documents\General\ISO\Windows 11 Intune\Drivers"
 
 ###############################################################################################################
 ######                                          Start Script                                             ######
@@ -119,6 +122,8 @@ function Select-ISO {
         $DefaultISOPath = $DefaultISOPath1
     } elseif (Test-Path $DefaultISOPath2) {
         $DefaultISOPath = $DefaultISOPath2
+    } elseif (Test-Path $DefaultISOPath3) {
+        $DefaultISOPath = $DefaultISOPath3
     } else {
         $DefaultISOPath = ""
     }
@@ -150,6 +155,8 @@ function Select-Provision {
         $DefaultProvisionPath = $DefaultProvisionPath1
     } elseif (Test-Path $DefaultProvisionPath2) {
         $DefaultProvisionPath = $DefaultProvisionPath2
+    } elseif (Test-Path $DefaultProvisionPath3) {
+        $DefaultProvisionPath = $DefaultProvisionPath3
     } else {
         $DefaultProvisionPath = ""
     }
@@ -181,6 +188,8 @@ function Select-DriverFolder {
         $DefaultDriversPath = $DefaultDriversPath1
     } elseif (Test-Path $DefaultDriversPath2) {
         $DefaultDriversPath = $DefaultDriversPath2
+    } elseif (Test-Path $DefaultDriversPath3) {
+        $DefaultDriversPath = $DefaultDriversPath3
     } else {
         $DefaultDriversPath = ""
     }
