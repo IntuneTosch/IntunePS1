@@ -1,4 +1,4 @@
-#Version 1.8.0
+#Version 1.9.0
 # Check for admin rights
 $IsAdmin = [Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()
 $IsAdminRole = $IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -35,15 +35,13 @@ if (-not (Test-Path $iconPath)) {
 $XAML = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tosch Intune 1.8.0" Height="390" Width="600" Background="#f5f1e9"
+        Title="Tosch Intune 1.9.0" Height="430" Width="600" Background="#f5f1e9"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
-        <!-- Sidebar -->
 <StackPanel Grid.Column="0" Background="#1e4962" Margin="0,0,10,0">
         <TextBlock Text="Tosch" Foreground="#ff6f00" FontSize="45" FontWeight="Bold" Margin="10,20,10,10"/>
             <Button x:Name="btnInstallPowershell" Content="Install Powershell 7" Margin="10,5,10,5"
@@ -52,18 +50,18 @@ $XAML = @"
                 Background="#ff6f00" Foreground="White" Padding="5"/>
             <Button x:Name="btnCheckModules" Content="Check Modules" Margin="10,5,10,5"
                 Background="#ff6f00" Foreground="White" Padding="5"/>
-    
-        <!-- New Language Dropdown + Create USB -->
-            <ComboBox x:Name="cmbLanguage" Margin="10,25,10,5" SelectedIndex="0">
+            <Button x:Name="btnCreateJSON" Content="JSON Maken" Margin="10,25,10,5"
+                Background="#ff6f00" Foreground="White" Padding="5"/>
+            <ComboBox x:Name="cmbLanguage" Margin="10,5,10,5" SelectedIndex="0">
                 <ComboBoxItem>Nederlandse ISO</ComboBoxItem>
                 <ComboBoxItem>Engelse ISO</ComboBoxItem>
-                 <ComboBoxItem>Custom ISO</ComboBoxItem>
+                <ComboBoxItem>Custom ISO</ComboBoxItem>
             </ComboBox>
                 <Button x:Name="btnCreateUSB" Content="Create USB" Margin="10,5,10,5"
                     Background="#ff6f00" Foreground="White" Padding="5"/>
-            
                 <Button x:Name="btnCreateUSBNP" Content="USB no Profile" Margin="10,5,10,5"
-                    Background="#ff6f00" Foreground="White" Padding="5"/>
+                    Background="#ff6f00" Foreground="White" Padding="5"
+                    HorizontalContentAlignment="Center"/>
 </StackPanel>
 
         <!-- Main Display -->
@@ -76,6 +74,7 @@ $XAML = @"
     </Grid>
 </Window>
 "@
+
 
 # Load XAML
 [xml]$XAMLWindow = $XAML
@@ -93,6 +92,7 @@ $Window.Icon = $iconBitmap
 $btnInstallPowershell = $Window.FindName("btnInstallPowershell")
 $btnInstallModules = $Window.FindName("btnInstallModules")
 $btnCheckModules   = $Window.FindName("btnCheckModules")
+$btnCreateJSON  = $Window.FindName("btnCreateJSON")
 $btnCreateUSB      = $Window.FindName("btnCreateUSB")
 $btnCreateUSBNP    = $Window.FindName("btnCreateUSBNP")
 $txtStatus         = $Window.FindName("txtStatus")
@@ -240,12 +240,34 @@ function Create-USBNP {
     $txtStatus.Text += "`n`nCreatie van USB zonder profiel $selectedLanguage is gestart in een extern venster."
 }
 
+function Create-JSON {
+
+    # Controleer of pwsh.exe beschikbaar is
+    $pwshPath = Get-Command pwsh.exe -ErrorAction SilentlyContinue
+
+    if (-not $pwshPath) {
+        $txtStatus.Text = "PowerShell 7 is niet gevonden.`n`nInstalleer PowerShell 7 handmatig of start de computer opnieuw op als deze net is geinstalleerd."
+        return
+    }
+
+    $txtStatus.Text = "PowerShell 7 is gevonden.`nDownloaden van script van GitHub..."
+    $githubRawUrlCreateJSONScript = "https://raw.githubusercontent.com/IntuneTosch/IntunePS1/refs/heads/main/JSON/JSON-Only.ps1"
+    $CreateJSONScript = "$env:TEMP\CreateJSONScript.ps1"
+    Invoke-WebRequest -Uri $githubRawUrlCreateJSONScript -OutFile $CreateJSONScript
+
+    $txtStatus.Text += "`nOpenen van script in een nieuw venster..."
+    Start-Sleep -Seconds 2
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$CreateJSONScript`""
+    $txtStatus.Text += "`n`nCreatie van JSON is gestart in een extern venster."
+}
+
 # Event Handlers
 $btnInstallPowershell.Add_Click({ Install-Powershell })
 $btnInstallModules.Add_Click({ Install-Modules })
 $btnCheckModules.Add_Click({ Check-Modules })
 $btnCreateUSB.Add_Click({ Create-USB })
 $btnCreateUSBNP.Add_Click({ Create-USBNP })
+$btnCreateJSON.Add_Click({ Create-JSON })
 
 # Run GUI
 $Window.ShowDialog() | Out-Null
