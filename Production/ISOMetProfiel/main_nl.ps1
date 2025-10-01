@@ -3,7 +3,7 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "2.0.0"
+$Scriptversion = "2.0.1"
 
 # Define default ISO file path
 $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11Intune2.0.iso"
@@ -39,7 +39,7 @@ Import-Module Microsoft.Graph.Authentication
 Import-Module Microsoft.Graph.Intune
 Import-Module WindowsAutopilotIntune -MinimumVersion 5.4
 Import-Module Microsoft.Graph.Groups
-Import-Module Microsoft.Graph.Identity.DirectoryManagement
+#Import-Module Microsoft.Graph.Identity.DirectoryManagement
 #  -RequiredVersion 2.8.0
 Write-Host $([system.text.encoding]::UTF8.GetString([system.convert]::FromBase64String($welcomeScreen)))          
 Write-Host "Modules zijn succesvol geïmporteerd."  -ForegroundColor Green
