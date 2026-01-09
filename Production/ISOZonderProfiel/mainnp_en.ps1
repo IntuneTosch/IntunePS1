@@ -3,12 +3,16 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "2.1.0"
+$Scriptversion = "2.2.0"
+$ISOVersion = "2.2"
+
+#Set ISO Based on version
+$ISOFileName = "W11IntuneEnglish$ISOVersion.iso"
 
 # Define default ISO file path
-$DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\W11IntuneEnglish2.1.iso"
-$DefaultISOPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\W11IntuneEnglish2.1.iso"
-$DefaultISOPath3 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documents\General\ISO\Windows 11 Intune\W11IntuneEnglish2.1.iso"
+$DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\$ISOFileName"
+$DefaultISOPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\$ISOFileName"
+$DefaultISOPath3 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documents\General\ISO\Windows 11 Intune\$ISOFileName"
 
 # Define default provision file path
 $DefaultProvisionPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
