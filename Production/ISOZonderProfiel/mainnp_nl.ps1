@@ -3,8 +3,8 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "2.2.0"
-$ISOVersion = "2.2"
+$Scriptversion = "2.3.0"
+$ISOVersion = "2.3"
 
 #Set ISO Based on version
 $ISOFileName = "W11Intune$ISOVersion.iso"
