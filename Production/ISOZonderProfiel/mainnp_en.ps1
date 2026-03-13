@@ -3,7 +3,7 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "2.3.0"
+$Scriptversion = "2.3.1"
 $ISOVersion = "2.3"
 
 #Set ISO Based on version
@@ -273,6 +273,9 @@ Copy-Item $ProvisionInvoke $winpe\Scripts\ -Force
 
 ##Kijken of er 1 USB is met de naam "Images"
 $USBImages = Select-Drive -volumeLabel "Images"
+
+#Maken van txt bestand met naam van ISO
+New-Item -Path $USBImages -Name "$ISOFileName" -ItemType File
 
 Remove-Item $env:TEMP\CreateUSBScriptNP.ps1
 ""
