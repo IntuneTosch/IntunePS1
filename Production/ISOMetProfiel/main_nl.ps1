@@ -3,11 +3,11 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "2.3.1"
+$Scriptversion = "2.3.2"
 $ISOVersion = "2.3"
 
 #Set ISO Based on version
-$ISOFileName = "W11Intune$ISOVersion.iso"
+$ISOFileName = "W11Intune$ISOVersion"
 
 # Define default ISO file path
 $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\$ISOFileName"
