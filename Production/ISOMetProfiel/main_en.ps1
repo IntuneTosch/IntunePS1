@@ -3,11 +3,11 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "2.3.2"
+$Scriptversion = "2.3.3"
 $ISOVersion = "2.3"
 
 #Set ISO Based on version
-$ISOFileName = "W11IntuneEnglish$ISOVersion"
+$ISOFileName = "W11IntuneEnglish$ISOVersion.iso"
 
 # Define default ISO file path
 $DefaultISOPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\$ISOFileName"
@@ -577,7 +577,8 @@ Copy-Item $ProvisionInvoke $winpe\Scripts\ -Force
 $USBImages = Select-Drive -volumeLabel "Images"
 
 #Maken van txt bestand met naam van ISO
-New-Item -Path $USBImages -Name "$ISOFileName" -ItemType File
+$baseName = [System.IO.Path]::GetFileNameWithoutExtension($ISOFileName)
+New-Item -Path $USBImages -Name $baseName -ItemType File
 
 ##kopieren van driver files naar de juiste folder
 Get-Item -Path $DriverFolder

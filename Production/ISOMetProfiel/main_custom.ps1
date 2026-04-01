@@ -3,7 +3,7 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "2.3.2"
+$Scriptversion = "2.3.3"
 
 # Define default provision file path
 $DefaultProvisionPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
@@ -554,8 +554,8 @@ Copy-Item $ProvisionInvoke $winpe\Scripts\ -Force
 $USBImages = Select-Drive -volumeLabel "Images"
 
 #Maken van txt bestand met naam van ISO
-$ISOFileName = [System.IO.Path]::GetFileNameWithoutExtension($WindowsISO)
-New-Item -Path $USBImages -Name "$ISOFileName" -ItemType File
+$baseName = [System.IO.Path]::GetFileNameWithoutExtension($ISOFileName)
+New-Item -Path $USBImages -Name $baseName -ItemType File
 
 ##kopieren van driver files naar de juiste folder
 Get-Item -Path $DriverFolder
