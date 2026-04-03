@@ -3,7 +3,7 @@
 ###############################################################################################################
 
 #Script Version
-$Scriptversion = "2.4.0"
+$Scriptversion = "2.4.1"
 $ISOVersion = "2.4"
 
 #Set ISO Based on version
