@@ -10,6 +10,11 @@ $DefaultProvisionPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techni
 $DefaultProvisionPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
 $DefaultProvisionPath3 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documents\General\ISO\Windows 11 Intune\Invoke-Provision.ps1"
 
+# Define default OA3Tool Folder Path
+$DefaultOA3ToolPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\OA3Tool"
+$DefaultOA3ToolPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\OA3Tool"
+$DefaultOA3ToolPath3 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documents\General\ISO\Windows 11 Intune\OA3Tool"
+
 # Resolve default path with current username
 $DefaultDriversPath1 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - General\ISO\Windows 11 Intune\Drivers"
 $DefaultDriversPath2 = "C:\Users\$env:USERNAME\Tosch Automatisering B.V\Techniek - Documenten\General\ISO\Windows 11 Intune\Drivers"
@@ -395,6 +400,38 @@ function Select-Provision {
     }
 }
 
+##OA3Tool Map Selecteren Functie:
+function Select-OA3Tool {
+    [CmdletBinding()]
+    param ()
+
+    Add-Type -AssemblyName System.Windows.Forms
+
+    if (Test-Path $DefaultOA3ToolPath1) {
+        $DefaultOA3ToolPath = $DefaultOA3ToolPath1
+    } elseif (Test-Path $DefaultOA3ToolPath2) {
+        $DefaultOA3ToolPath = $DefaultOA3ToolPath2
+    } elseif (Test-Path $DefaultOA3ToolPath3) {
+        $DefaultOA3ToolPath = $DefaultOA3ToolPath3
+    } else {
+        $DefaultOA3ToolPath = ""
+    }
+
+    if (Test-Path $DefaultOA3ToolPath) {
+        return $DefaultOA3ToolPath
+    } else {
+        $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+        $OpenFileDialog.Filter = 'PS1 Files (*.ps1)|*.ps1'
+        $OpenFileDialog.Title = "Selecteer de PowerShell provisioning script"
+
+        if ($OpenFileDialog.ShowDialog() -eq 'OK') {
+            return $OpenFileDialog.FileName
+        } else {
+            return $null
+        }
+    }
+}
+
 ##Driver folder kiezen
 function Select-DriverFolder {
     [CmdletBinding()]
@@ -497,7 +534,7 @@ $profilejson | Out-File -FilePath $path\AutopilotConfigurationFile.json
 ######                                              Execution Endpoint                                   ######
 ###############################################################################################################
 
-##Selecteren ISO:
+##Selecteren Variablen:
 $WindowsISO = Select-ISO
 if (-not $WindowsISO -or -not (Test-Path $WindowsISO)) {
     Write-Error "Er is geen geldig ISO-bestand geselecteerd. Het script wordt beëindigd."
@@ -505,12 +542,17 @@ if (-not $WindowsISO -or -not (Test-Path $WindowsISO)) {
 }
 $DriverFolder = Select-DriverFolder
 if (-not $DriverFolder -or -not (Test-Path $DriverFolder)) {
-    Write-Error "Er is geen geldig ISO-bestand geselecteerd. Het script wordt beëindigd."
+    Write-Error "Er is geen geldig Driver Folder geselecteerd. Het script wordt beëindigd."
     exit 1
 }
 $ProvisionInvoke = Select-Provision
 if (-not $ProvisionInvoke -or -not (Test-Path $ProvisionInvoke)) {
-    Write-Error "Er is geen geldig ISO-bestand geselecteerd. Het script wordt beëindigd."
+    Write-Error "Er is geen geldig Provision geselecteerd. Het script wordt beëindigd."
+    exit 1
+}
+$OA3ToolMap = Select-OA3Tool
+if (-not $OA3ToolMap -or -not (Test-Path $OA3ToolMap)) {
+    Write-Error "Er is geen OA3Tool map gevonden. Het script wordt beëindigd."
     exit 1
 }
 
@@ -550,9 +592,6 @@ $USBImages = Select-Drive -volumeLabel "Images"
 Get-Item -Path $ProvisionInvoke
 Copy-Item $ProvisionInvoke $winpe\Scripts\ -Force
 
-##Kijken of er 1 USB is met de naam "Images"
-$USBImages = Select-Drive -volumeLabel "Images"
-
 #Maken van txt bestand met naam van ISO
 $baseName = [System.IO.Path]::GetFileNameWithoutExtension($ISOFileName)
 New-Item -Path $USBImages -Name $baseName -ItemType File
@@ -560,6 +599,10 @@ New-Item -Path $USBImages -Name $baseName -ItemType File
 ##kopieren van driver files naar de juiste folder
 Get-Item -Path $DriverFolder
 Copy-Item -Path $DriverFolder -Destination $USBImages\ -Recurse -Force
+
+##kopieren van OA3Tool Folder
+Get-Item -Path $OA3ToolMap
+Copy-Item -Path $OA3ToolMap -Destination $winpe\Scripts\ -Recurse -Force
 
 Remove-Item $env:TEMP\CreateUSBScript.ps1
 ""
